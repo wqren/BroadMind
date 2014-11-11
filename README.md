@@ -6,10 +6,12 @@ CIS 519 term project
 ##Setting up the environment
 
 1.) Build RLGlue Core
- -   cd external/rlglue-3.04
- -   ./configure
- -   make
- -   sudo make install
+```bash
+$ cd external/rlglue-3.04
+$ ./configure
+$ make
+$ sudo make install
+```
 
 2.) Build RLGlue C Codec
  -  cd external/c-codec-2.0
@@ -34,13 +36,15 @@ CIS 519 term project
  -  cd external/15-rl-competition-2009
  -  bash install.bash
 
+Documentation for using external systems (RLGlue, ALE, 2009 Comp) are in the docs directory. 
+
 ##Possible Atari 2600 Platformers (in order of difficulty)
- 1.) Kung Fu Master
- 2.) Frostbite
- 3.) Kangaroo
- 4.) Pitfall
- 5.) H.E.R.O.
- 6.) Montezuma Revenge
+1.) Kung Fu Master
+2.) Frostbite
+3.) Kangaroo
+4.) Pitfall
+5.) H.E.R.O.
+6.) Montezuma Revenge
 
 ##Relevant Links
 
