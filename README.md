@@ -55,6 +55,53 @@ $ bash install.bash
 
 Documentation for using external systems (RLGlue, ALE, 2009 Comp) are in the docs directory. 
 
+##Running Experiments
+This project uses the RL-Glue framework as its cornerstone. RL-Glue involves 4 components to run:
+- rl_glue (Creates a core server for communication)
+- An Agent (e.g. A random agent, an AI for a particular game, etc.)
+- An Environment (e.g. ALE with a ROM, Infinite Mario, Tetris)
+- An Experiment (Instructions for how to run the process.)
+
+An RL-Glue process does not start until the master hears from the other 3 components.
+
+###2009 AI Competition (Mario)
+
+The 2009 AI Competition has a few out-of-the-box experiments that can be run. In 2 terminals:
+```bash
+$ cd external/15-rl-competition-2009/trainers/guiTrainerJava
+$ bash run.bash
+```
+```bash
+$ cd external/15-rl-competition-2009/agents/marioAgentJava
+$ bash run.bash
+```
+
+The first executes the main rl_glue core, as well as an environment and experiment (through a GUI loader). The second loads a Mario AI. The GUI does not load until both are connected. Once the GUI is open, load the GeneralizedMario Environment, configure parameters, then select Load Experiment.
+
+Other demo agents are available to run for the other environments. There are additional trainers that can be used without the GUI.
+
+###Arcade Learning Environment
+
+We also have an ALE demonstration through RL-Glue running our Pitfall platformer. In 4 terminals:
+```bash
+$ rl_glue
+```
+```bash
+$ cd external/ale_0.4-2.4/ale_0_4/doc/examples
+$ make rlglueAgent
+$ ./RLGlueAgent
+```
+```bash
+$ cd external/ale_0.4-2.4/ale_0_4/doc/examples
+$ ./RLGlueExperiment
+```
+```bash
+$ cd external/ale_0.4-2.4/ale_0_4
+$ ./ale -game_controller rlglue roms/pitfall.bin
+```
+
+Additional Atari ROMS can be added to the roms directory, though ALE is looking for them to be named a particular way. The demo agent is generic and could be run on any ALE game.
+
 ##Possible Atari 2600 Platformers (in order of difficulty)
 1.) Kung Fu Master
 2.) Frostbite
