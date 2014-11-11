@@ -27,4 +27,6 @@ Setting up the environment
  -  cd doc/examples
  -  make rlglueAgent
 
-
+5.) (Optional) Build RL 2009 Competition
+ -  cd external/15-rl-competition-2009
+ -  bash install.bash
