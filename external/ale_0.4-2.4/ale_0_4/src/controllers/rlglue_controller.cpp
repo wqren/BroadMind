@@ -26,7 +26,9 @@
 #include <rlglue/utils/C/RLStruct_util.h>
 
 // How many observation dimensions
-#define NUM_OBSERVATION_DIMENSIONS (128 + 210*160)
+//#define NUM_OBSERVATION_DIMENSIONS (128 + 210*160)
+//modified nrs 8/9/13
+#define NUM_OBSERVATION_DIMENSIONS (105*80)
 
 RLGlueController::RLGlueController(OSystem* _osystem) :
   ALEController(_osystem) {
@@ -78,9 +80,9 @@ void RLGlueController::initRLGlue() {
 }
 
 void RLGlueController::endRLGlue() {
-	// Taken from teardown_rlglue_network
+  // Taken from teardown_rlglue_network
   rlClose(m_connection);
-	rlBufferDestroy(&m_buffer);
+  rlBufferDestroy(&m_buffer);
 }
 
 void RLGlueController::rlGlueLoop() {
@@ -94,33 +96,33 @@ void RLGlueController::rlGlueLoop() {
 
     // Switch statement fills m_buffer with some data for RL-Glue
     switch(envState) {
-      case kEnvInit:
-        envInit();
-        break;
+    case kEnvInit:
+      envInit();
+      break;
 
-      case kEnvStart:
-        envStart();
-        break;
+    case kEnvStart:
+      envStart();
+      break;
 
-      case kEnvStep:
-        envStep();
-        break;
+    case kEnvStep:
+      envStep();
+      break;
 
-      case kEnvCleanup:
-        envCleanup();
-        break;
+    case kEnvCleanup:
+      envCleanup();
+      break;
 
-      case kEnvMessage:
-        envMessage();
-        break;
+    case kEnvMessage:
+      envMessage();
+      break;
 
-      case kRLTerm:
-        break;
+    case kRLTerm:
+      break;
 
-      default:
-        std::cerr << "Unknown RL-Glue command: " << envState << std::endl;
-        error = true;
-        break;
+    default:
+      std::cerr << "Unknown RL-Glue command: " << envState << std::endl;
+      error = true;
+      break;
     };
 
     // Send back whatever we put in the buffer to the RL-Glue
@@ -140,7 +142,9 @@ void RLGlueController::envInit() {
     "VERSION RL-Glue-3.0 "+
     "PROBLEMTYPE episodic "+
     "DISCOUNTFACTOR 1 "+ // Goal is to maximize score... avoid unpleasant tradeoffs with 1 
-    "OBSERVATIONS INTS (128 0 255)(33600 0 127) "+ // RAM, then screen
+    //modified nrs 8/9/13
+    //"OBSERVATIONS INTS (128 0 255)(33600 0 127) "+ // RAM, then screen
+    "OBSERVATIONS INTS (8400 0 255) "+ // downsampled bw screen
     //"ACTIONS INTS (0 17) "+ // Inactive PlayerB 
     "ACTIONS INTS (0 17)(18 35) "+ // Two actions: player A and player B
     "REWARDS (UNSPEC UNSPEC) "+ // While rewards are technically bounded, this is safer 
@@ -174,7 +178,7 @@ void RLGlueController::envStart() {
 }
 
 /** Reads in an action, returns the next observation-reward-terminal tuple.
-  *  derived from onEnvStep(). */ 
+ *  derived from onEnvStep(). */ 
 void RLGlueController::envStep() {
   unsigned int offset = 0;
  
@@ -238,14 +242,34 @@ reward_observation_terminal_t RLGlueController::constructRewardObservationTermin
   reward_observation_terminal_t ro;
   
   int index = 0;
-  const ALERAM & ram = m_environment.getRAM();
+  //nrs - comment out ram
+  //const ALERAM & ram = m_environment.getRAM();
   const ALEScreen & screen = m_environment.getScreen();
 
-  // Copy RAM and screen into our big int-vector observation 
-  for (size_t i = 0; i < ram.size(); i++)
-    m_observation.intArray[index++] = ram.get(i);
-  for (size_t i = 0; i < screen.arraySize(); i++)
-    m_observation.intArray[index++] = screen.getArray()[i];
+  pixel_t cur_pixel;
+  int color_total = 0;
+  int r, g, b;
+
+  for (size_t col = 0; col < screen.width() ; col += 2) 
+    {
+      for (size_t row = 0; row < screen.height() ; row += 2)
+	{
+	  color_total = 0;
+	  for (int i = 0; i < 2; i++)
+	    {
+	      for (int j = 0; j < 2; j++)
+		{
+		  cur_pixel = screen.get(row+i, col+j);
+		    m_osystem->p_export_screen->
+		      get_rgb_from_palette(cur_pixel, r, g, b);
+		    color_total += r + g + b;
+		}
+	    }
+	  color_total /= (4 * 3); //4 pixels, each with three color channels.
+	  m_observation.intArray[index++] = color_total;
+	}
+      
+    }
 
   ro.observation = &m_observation;
 
@@ -255,7 +279,7 @@ reward_observation_terminal_t RLGlueController::constructRewardObservationTermin
 
   __RL_CHECK_STRUCT(ro.observation)
   
-  return ro;
+    return ro;
 }
 
 #else

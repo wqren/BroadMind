@@ -88,7 +88,6 @@ $ rl_glue
 ```
 ```bash
 $ cd external/ale_0.4-2.4/ale_0_4/doc/examples
-$ make rlglueAgent
 $ ./RLGlueAgent
 ```
 ```bash
