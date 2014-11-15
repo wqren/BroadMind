@@ -30,6 +30,15 @@ $ python setup.py install
 
 
 4.) Build ALE (with RLGlue Agent)
+Install external libsdl dependency for visualization support.
+https://www.libsdl.org
+If you choose not to do this step, you must disable USE_SDL in the makefile that you use later. You also will have to skip the "-display_screen true" command line option when executing ALE.
+If you run into trouble with this (I did on Mac), try installing using brew:
+```bash
+$ brew install sdl2
+$ brew install sdl_gfx
+$ brew install sdl_image
+```
 ```bash
 $ cd external/ale0.4_-2.4/ale_0_4
 ```
@@ -96,7 +105,7 @@ $ ./RLGlueExperiment
 ```
 ```bash
 $ cd external/ale_0.4-2.4/ale_0_4
-$ ./ale -game_controller rlglue roms/pitfall.bin
+$ ./ale -display_screen true -game_controller rlglue roms/pitfall.bin
 ```
 
 Additional Atari ROMS can be added to the roms directory, though ALE is looking for them to be named a particular way. The demo agent is generic and could be run on any ALE game.
