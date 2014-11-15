@@ -108,7 +108,7 @@ $ cd external/ale_0.4-2.4/ale_0_4
 $ ./ale -display_screen true -game_controller rlglue roms/pitfall.bin
 ```
 
-Additional Atari ROMS can be added to the roms directory, though ALE is looking for them to be named a particular way. The demo agent is generic and could be run on any ALE game.
+Additional Atari ROMS can be added to the roms directory, though ALE is looking for them to be named a particular way. See http://yavar.naddaf.name/ale/list_of_current_games.html for a list of supported ROMS, and what the expected names are.
 
 ##Running Our Experiments
 
@@ -131,13 +131,14 @@ Right now, our Mario agent can parse the observations from the RLGlue interface 
 ./mario_agent
 ```
 
-##Possible Atari 2600 Platformers (in order of difficulty)
-1.) Kung Fu Master
-2.) Frostbite
-3.) Kangaroo
-4.) Pitfall
-5.) H.E.R.O.
-6.) Montezuma Revenge
+##Currently Supported Atari 2600 Platformers
+- kung_fu_master
+- frostbite
+- kangaroo
+- pitfall
+- pitfall2
+- hero
+- montezuma_revenge
 
 ##Relevant Links
 
