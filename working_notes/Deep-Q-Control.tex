@@ -1,0 +1,94 @@
+\documentclass[11pt,english]{article}
+
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{latexsym}
+\usepackage{xspace}
+\usepackage{pdflscape}
+\usepackage[hyphens]{url}
+\usepackage[colorlinks]{hyperref}
+\usepackage{enumerate}
+\usepackage{ifthen}
+\usepackage{float}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{algorithm2e}
+
+\newcommand{\rthree}{\mathbb{R}^3}
+\title{BroadMind: Deep-Q-Learning for Trajectory Following Control}
+ \author{Dave Kotfis}
+ 
+\date{11/14/2014}
+
+\begin{document}
+\maketitle
+
+For offline training by moving the actor around in the game without a desired trajectory or reward function (exploration mode):
+
+\begin{itemize}
+
+\item Maintain an $H$-step history of control inputs, $hc_i$.
+\item Maintain an $H$-step history of relative onscreen positions, $hd_i$.
+
+\end{itemize}
+
+For each cycle:
+
+\begin{enumerate}
+
+\item Observe the actor's current position, $p = (x, y)$
+\item Select a random control input, $c$. Input this control to the game.
+\item Shift left all elements in $hc_i$, append $c$ to the end.
+\item Observe the actor's updated position, $p' = (x', y')$
+\item Compute the difference between the current and previous position, $d = (x'-x, y'-y)$.
+\item Shift left all elements in $hd_i$, append $d$ to the end.
+\item Update NN by training against new input sequence $hd$ and new output sequence $hc$.
+
+\end{enumerate}
+
+For operation live with desired trajectory inputs being received by the agent from a higher level function (exploitation mode):
+
+\begin{itemize}
+
+\item Maintain an $H$-step history of control inputs, $hc_i$.
+\item Maintain an $H$-step history of desired trajectories of length $H$ in an $H$x$H$ matrix, $ht_{ij}$.
+\item Maintain an $H$-step history of rewards, $hr_i$.
+\item Define $C$ to be the number of possible control inputs.
+\item Generate a matrix of size $C*H$ by $H$ mapping actions to control input sequences, $A_{ij}$. For a game with C = 2 control inputs and H = 2 history length, this creates a matrix:
+\[
+\bf{A} = \begin{bmatrix} 0 & 0 \\
+0 & 1 \\
+1 & 0 \\
+1 & 1 \end{bmatrix}
+\]
+Here, the rows of $\bf{A}$ correspond with actions (control sequences) where the left-most element in the row is the first control input of the sequence.
+
+\end{itemize}
+
+For each cycle:
+
+\begin{enumerate}
+
+\item Observe the actor's current position, $p = (x, y)$.
+\item Observe the desired $H$-step trajectory, $t = \{(x_1, y_1), ..., (x_h, y_h)\}$.
+\item Shift up all elements in $ht_ij$, append $t$ to the bottom.
+\item Compute the current state, $s = \{(x_1 - x, y_1 - y), ..., (x_h - x_{h-1}, y_h - y_{h-1})\}$.
+\item Input s into the Q-function neural network. Get out a vector of weights $w_i$ of length $C*H$.
+\item Compute $a = argmax(w_i)$.
+\item Select the current control input $c = A_{a1}$. Input this control to the game.
+\item Shift left all elements in $hc_i$, append $c$ to the end.
+\item Observe the current reward $r$.
+\item Shift left all elements in $hr_i$, append $0$ to the end, add $r$ to all elements. 
+\item Update NN by training against new input sequence $ht_1i$ and new output sequence $hc$ multiplied element-wise by weights $hr_j$.
+
+\end{enumerate}
+
+\end{document}

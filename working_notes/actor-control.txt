@@ -1,0 +1,32 @@
+Learning Actor Control:
+This sub-element is responsible for controlling the platforming actor in the game with raw controller input to follow a planned trajectory produced by the pipeline. We achieve this through a variation of Deep Q-Learning, using an encoding of the desired trajectory as the state space, and the set of control sequences for actions.
+
+Q-Learning
+
+Q-Learning is a popular Reinforcement Learning technique that converges to an optimal policy for MDPs.
+
+Traditional Q-Learning contains a quality value Q for each state action pair (s,a). At every step, either a random, exploratory action is chosen, or the action which has the maximal Q value. After observing the new state and received reward, the Q value for the previous step is updated to reflect the new observation, with the rule:
+
+Q(s,a) = r + gamma * max(Q(s',a'))
+
+This considers the value of future rewards with a time penalty.
+
+Deep Q-Learning uses a neural network for the quality function where the output from forward propagation is the quality value for each action. Updates to the Q-function are performed through a stochastic gradient descent step between an observed quality value and the prediction of the neural network using its learned weights.
+
+Experience Replay is a useful technique that may be applicable to our work. This stores a set of old experiences, (s, a, r, s'), that can be used to periodically retrain the learner from old data. This is useful to avoid situations where the agent starts to experience similar data that can cause it to unlearn things that it learned from older data.
+
+Trajectory Following Learner
+
+In this application, we are trying to learn sequences of control inputs that result in an actor following a desired trajectory. The reward is related to the distance between the actor and the desired trajectory. It is known a priori, though we need to be able to follow arbitrary trajectories.
+
+We use a Deep Q-Learning technique similar to the work of DeepMind, though we encode the state not using preprocessed raw pixel input, but instead an encoding of a sequence of relative screen space positions of the desired trajectory. An example trajectory that aims to move 3 pixels to the right, one pixel up, and one pixel down and left would be {-R, -R, -R, U-, DL}. Encoding a state that is an L-step trajectory will then require 4*L bits to encode.
+
+The action set is that of control input sequences. For a game with M input buttons and actions using N step input sequences, an action can be encoded with M*N bits.
+
+We can initially begin to learn the Q-function in the absence of desired trajectories by training the neural network by moving the game actor with random exploratory control input and recording relative screen space position sequences and matching control input sequences. The neural network can be trained with these observations. Having an up-front exploratory process allows the online algorithm to stick to an exploitation-only policy.
+
+This process would perform well for input trajectories that matched an observed trajectory that was learned during training. However, there will be a large set of unachievable desired trajectory states for which there is no guarantee on acceptable levels of performance for the agent. To account for this, online reinforcement learning is necessary to train the Q-function to recognize “closeness” of states. By rewarding traversal through states that are close in screen space, the Q-function becomes more effective at producing sufficient yet imperfect trajectory tracking performance.
+
+It is worth noting that although the actions are represented by a sequence of control inputs, we only execute the first action in the selected sequence before observing the next state, updating the Q-function and selecting the next optimal action.
+
+It is necessary to encode states and actions as sequences because this indirectly allows for the derivatives to be captured. The position-only state of the actor would not sufficiently be able to learn a dynamical system that depends on the state derivatives. For example, imagine trying to predict the next screen space position of the actor given its current position alone in a game where the actor has some inertia causing it to move to the right in the absence of control input.
