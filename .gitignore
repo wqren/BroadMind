@@ -1,6 +1,7 @@
 *.o
 *.lo
 *.la
+*.pyc
 external/ale_0.4-2.4/ale_0_4/.DS_Store
 external/ale_0.4-2.4/ale_0_4/ale
 external/ale_0.4-2.4/ale_0_4/doc/.DS_Store
@@ -57,4 +58,6 @@ external/15-rl-competition-2009/system/rl-glue/tests/Makefile
 external/15-rl-competition-2009/trainers/consoleTrainerCPP/bin/
 external/15-rl-competition-2009/trainers/consoleTrainerJava/bin/
 external/15-rl-competition-2009/trainers/consoleTrainerPython/RL_experiment
+mario/mario_agent
+mario/mario_environment
 *~

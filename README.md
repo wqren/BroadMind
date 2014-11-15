@@ -55,7 +55,7 @@ $ bash install.bash
 
 Documentation for using external systems (RLGlue, ALE, 2009 Comp) are in the docs directory. 
 
-##Running Experiments
+##Running Off-the-Shelf Experiments
 This project uses the RL-Glue framework as its cornerstone. RL-Glue involves 4 components to run:
 - rl_glue (Creates a core server for communication)
 - An Agent (e.g. A random agent, an AI for a particular game, etc.)
@@ -100,6 +100,27 @@ $ ./ale -game_controller rlglue roms/pitfall.bin
 ```
 
 Additional Atari ROMS can be added to the roms directory, though ALE is looking for them to be named a particular way. The demo agent is generic and could be run on any ALE game.
+
+##Running Our Experiments
+
+These are instructions for running the agents and experiments for our project.
+
+###Mario
+First you must build the Mario experiment.
+```bash
+cd mario
+make
+```
+
+Then you can run a python executable that boots up multiple processes for RL-Glue, the mario environment, a mario experiment, and our mario agent.
+```bash
+python run_mario_exp.py
+```
+
+Right now, our Mario agent can parse the observations from the RLGlue interface from the Mario environment, and it selects actions randomly. All of the python files that need to be modified are within the src directory. The mario agent itself can be run with the 2009 Competition GUI trainer by running:
+```bash
+./mario_agent
+```
 
 ##Possible Atari 2600 Platformers (in order of difficulty)
 1.) Kung Fu Master
