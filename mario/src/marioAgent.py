@@ -48,7 +48,7 @@ class MarioAgent(Agent):
             self.last_actions = []
         self.this_actions = [];
         print "ended after " + str(self.total_steps) + " total steps"
-        print "average " + str(1000.0*self.step_number/time_passed) + " steps per second"
+        print "average " + str(self.step_number/time_passed) + " steps per second"
 	
     def agent_cleanup(self):
         pass
