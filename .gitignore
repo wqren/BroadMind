@@ -2,12 +2,10 @@
 *.lo
 *.la
 *.pyc
-external/ale_0.4-2.4/ale_0_4/.DS_Store
+*DS_Store
 external/ale_0.4-2.4/ale_0_4/ale
-external/ale_0.4-2.4/ale_0_4/doc/.DS_Store
 external/ale_0.4-2.4/ale_0_4/doc/examples/RLGlueAgent
 external/ale_0.4-2.4/ale_0_4/doc/examples/RLGlueExperiment
-external/ale_0.4-2.4/ale_0_4/doc/manual/.DS_Store
 external/ale_0.4-2.4/ale_0_4/libale.so
 external/ale_0.4-2.4/ale_0_4/makefile
 external/c-codec-2.0/Makefile
