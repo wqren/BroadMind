@@ -47,7 +47,6 @@ class MarioAgent(Agent):
         self.trial_start = 0.0
         self.total_steps = 0
         self.step_number = 0
-        self.gamma = 0.6 #Discount rate for future rewards
         self.exp = 0.95 #Exploration factor
         self.state_dim_x = 20
         self.state_dim_y = 12
@@ -55,7 +54,7 @@ class MarioAgent(Agent):
         self.last_action = None
         random.seed(0)
         if (self.learn_mode == 1):
-            self.Q = QNN(nactions=12, input_size=(self.state_dim_x*self.state_dim_y), alpha=0.2)
+            self.Q = QNN(nactions=12, input_size=(self.state_dim_x*self.state_dim_y), max_experiences=500, gamma=0.6, alpha=0.2)
 	
     def agent_start(self,observation):
         self.step_number = 0
@@ -180,6 +179,7 @@ class MarioAgent(Agent):
     def update(self, observation, action, reward):
         if (self.learn_mode == 1):
             self.qnnUpdate(observation, action, reward)
+            self.Q.ExperienceReplay()
 
     def stateEncoder(self, observation):
         s = []
@@ -251,12 +251,7 @@ class MarioAgent(Agent):
         ls = self.stateEncoder(self.last_state)
         a = self.actionEncoder(action)
         la = self.actionEncoder(self.last_action)
-        #TODO: Use a flag between using a SARSA update or the regular Q update
-        #TODO: Do we need some experience replay function like DeepMind?
-        target_value = reward + self.gamma*max(self.Q(s)) #Q-Learning
-        self.Q.Update(ls, la, target_value)
-        #target_value = reward + self.gamma*self.Q(s, a) #SARSA 
-        #self.Q.Update(ls, la, target_value)
+        self.Q.Update(ls, la, reward, s, a)
 
     def saveQFun(self, fileName):
         theFile = open(fileName, "w")
