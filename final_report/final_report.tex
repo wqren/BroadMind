@@ -14,6 +14,9 @@
 %\usepackage{epsfig} % less modern
 \usepackage{subfigure} 
 
+% use formatting for item enumeration
+\usepackage{enumitem}
+
 % For citations
 \usepackage{natbib}
 
@@ -57,162 +60,109 @@
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{boring formatting information, machine learning}
+\icmlkeywords{machine learning, reinforcement learning, deep learning}
 
-\vskip 0.3in
 ]
 
 \begin{abstract} 
-Use this template to write your final report for CIS 419/519.  It is based on the paper template used in the International Conference on Machine Learning, one of the main machine learning conferences.
+Recent work in reinforcement learning have focused on building generalist video game agents, as opposed to focusing on a particular type, or genre of games. We aim to build a more specialized high-performance agent focused on the more challenging genre of platform games, which has received less attention.
 \end{abstract} 
 
 
 
-\section{Final Submission}
+\section{Background}
+Platform games, also known as platformers, are video games in which players guide a free- running avatar to jump between suspended platforms and avoid obstacles to advance through levels in the game. As a result of the array of environments to parse and the huge decision space for strategies, these games are very difficult for machines to play well. Instead of intuiting all levels of gameplay from first principles, we aim to build an agent that breaks down the problem as a human player would.
 
-Your final submission will consist of two deliverables:  (1) a final report, and (2) a set of summary slides.  Remember that late days cannot be used for
-the final project submission.
+\subsection{Platform AI}
+Talk about A* approaches and the Mario 2009 competition.
 
-\subsection{Final Report}
+\subsection{Reinforcement Learning}
+Q-Learning, SARSA, TD-Learning
 
-Your final project report can be at most 5 pages long (include all text, appendices, figures, references, and anything else), and must be written in the provided \LaTeX\ template. 
+\subsection{Deep Q-Learning}
+\cite{Mnih13}
 
-At a minimum your final report must describe the problem/application and motivation, survey related work, discuss your approach, and describe your results/conclusions/impact of your project.  It should include enough detail such that someone else can reproduce your approach and results.  For inspiration on what should be included, see the project reports available on the links provided in Section~\ref{sect:Ideas}.  You will likely end up with a better report if you start by writing a 6-7 page report and then edit it down to 5 pages of well-written and concise prose.
+Talk about Experience Replay.
 
-In addition, your report must also include a figure that graphically depicts a major component of your project (e.g., your approach and how it relates to the application, etc.).  Such a summary figure makes your paper much more accessible by providing a visual counterpart to the text.  Developing such a concise and clear figure can actually be quite time-consuming; I often go through around ten versions before I end up with a good final version.
+\section{Approach}
 
-After the class, we are also considering posting the final reports online so that you can read about each others� work. If are okay with having your final report posted online, be sure to give us explicit permission to post it in the README file, as described in the project description.
+\subsection{Experimental Setup}
 
-\subsection{Summary Slides}
+\subsubsection{RL-Glue}
+RL-Glue is a socket-based API that enables reinforcement learning projects to work across multiple languages \cite{Tanner09}. RL-Glue applications are made up of a core communications process, an agent, an environment, and an experiment. This allows our experiments to connect reusable Python agents across many environments written in languages including C++ and Java. It also enables us to customize our experiments, such as optional game visualization, loading and saving trained policies, adjusting the game difficulty, etc.
 
-In addition to the final report, you are also required to prepare a two-slide overview of your project.  Details on the summary slides are available in the project description.
+\subsubsection{Generalized Mario}
+Although our goal is to train agents to play Atari 2600 platforming games, it is easier to learn from a platform game that provides more layers of environment representations than raw screen pixels. To do this, we have started with the Generalized Mario environment that was contained in the 2009 AI Competition software package, and conveniently RL-Glue compatible \cite{Togelius10}.
 
-\section{Optional Suggestions for Your Paper and Formatting Guidance} 
+The Generalized Mario game has a total control input space of 12. This is made up of (-1, 0, 1) for left, none, and right motions respectively, on/off for jump, and on/off for run. We have used an encoding function that maps the integers (0-11) to and from these control input combinations. 
 
-\subsection{Figures}
- 
-You may want to include figures in the paper to help readers visualize
-your approach and your results. Such artwork should be centered,
-legible, and separated from the text. Lines should be dark and at
-least 0.5~points thick for purposes of reproduction, and text should
-not appear on a gray background.
+Generalized Mario's interface provides many layers of state observation. It includes the (x,y) position and velocity of the mario actor, as well as a 22x16 tile grid semantically describing the screen space with the location of coins, pipes, blocks, etc. Separately, it has a list of all enemy positions on-screen, with similar position and velocity information as provided about Mario. 
 
-Label all distinct components of each figure. If the figure takes the
-form of a graph, then give a name for each axis and include a legend
-that briefly describes each curve. Do not include a title inside the
-figure; instead, be sure to include a caption describing your figure.
+Our research aims to determine how to intelligently encode platform game state information. We are investigating ways to represent the environmental observation provided by Generalized Mario.
 
-You may float figures to the top or
-bottom of a column, and you may set wide figures across both columns
-(use the environment {\tt figure*} in \LaTeX), but always place
-two-column figures at the top or bottom of the page.
+\subsubsection{Arcade Learning Environment}
+We have leveraged the Arcade Learning Environment, an open-source and RL-Glue compatible framework built on top of an Atari 2600 emulator \cite{bellemare13}.  It provides an API for interfacing with the raw pixels, the current score, and the controller input of the game. This has allowed us to use original Atari games to train and evaluate our agents. We currently support the following Atari platformers in our experimental setup:
+\begin{enumerate} [topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+\item Kung-Fu Master
+\item Frostbite
+\item Kangaroo
+\item Pitfall!
+\item Pitfall! 2
+\item H.E.R.O.
+\item Montezuma's Revenge
+\end{enumerate}
+We plan to extend our Mario work to see if we can learn a similar state representation from the raw pixel inputs of ALE for these platform games.
 
-\subsection{Algorithms}
+\subsection{Learning Algorithms}
 
-If you are using \LaTeX, please use the ``algorithm'' and ``algorithmic'' 
-environments to format pseudocode. These require 
-the corresponding stylefiles, algorithm.sty and 
-algorithmic.sty, which are supplied with this package. 
-Algorithm~\ref{alg:example} shows an example. 
+\subsubsection{State Representation in Mario}
+It is challenging to find a powerful representation of the Mario game state that enables effective Reinforcement Learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many ambiguities that we are investigating. For example, what coordinate frame should be used?  \\
+Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location.
+
+
+\subsubsection{Neural Q-Learning}
+
+Typically, Q-Learning approaches use a table representing the Q-function. This table contains a value for every combination of state and action. However, for very large state/action spaces such as platforming games, this is impractical as the space would take too many trials to explore and converge on an optimal policy. Even using optimizations such as a Nearest Neighbor algorithm ran out of memory in our approach (spaces greater than 32 are not permitted, compared to at least 1,000+ for this application). 
+
+We have implemented a neural-network based Q-learning algorithm (see Algorithm~\ref{alg:q-learn}) to allow us to learn on large state/action spaces with reasonable memory utilization by finding a useful hidden layer. Inspired by DeepMind's approach, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. We can optionally use the standard Q-Learning update, or the SARSA calculation.
 
 \begin{algorithm}[tb]
-   \caption{Bubble Sort}
-   \label{alg:example}
+   \caption{Neural Q-Learning}
+   \label{alg:q-learn}
 \begin{algorithmic}
-   \STATE {\bfseries Input:} data $x_i$, size $m$
-   \REPEAT
-   \STATE Initialize $noChange = true$.
-   \FOR{$i=1$ {\bfseries to} $m-1$}
-   \IF{$x_i > x_{i+1}$} 
-   \STATE Swap $x_i$ and $x_{i+1}$
-   \STATE $noChange = false$
+   \STATE Initialize Neural Q-Network with random weights
+   \FOR{episode$ = 1, m$}
+   \STATE Initialize previous state $s_0$ and previous action $a_0$ to NULL
+   \FOR{$t = 1, T$}
+   \STATE Observe state $s_t$ from the emulator
+   \STATE With probability $\epsilon$, select random action $a_t$
+   \STATE Else, set $a_i = \max_a Q(s_t, a)$ by forward propagating $s_t$ through Q
+   \IF{$s_{t-1}$ and $a_{t-1}$ are not NULL}
+   \STATE Observe reward $r$ from emulator
+   \IF{using SARSA update rule}
+   \STATE Compute $v = r + \gamma Q(s_t, a_t)$
+   \ELSE
+   \STATE Compute $v = r + \gamma \max_a Q(s_t, a)$
    \ENDIF
+   \STATE Update Q through backpropagation of value v on output $a_{t-1}$
+   \ENDIF
+   \STATE Apply action $a_i$ to emulator
+   \STATE Update state $s_{t-1} = s_t$ and action $a_{t-1} = a_t$
    \ENDFOR
-   \UNTIL{$noChange$ is $true$}
+   \ENDFOR
 \end{algorithmic}
 \end{algorithm}
- 
-\subsection{Tables} 
- 
-You may also want to include tables that summarize material. Like 
-figures, these should be centered, legible, and numbered consecutively. 
-However, place the title {\it above\/} the table, as in 
-Table~\ref{sample-table}.
-% Note use of \abovespace and \belowspace to get reasonable spacing 
-% above and below tabular lines. 
 
-\begin{table}[t]
-\caption{Classification accuracies for naive Bayes and flexible 
-Bayes on various data sets.}
-\label{sample-table}
-\vskip 0.15in
-\begin{center}
-\begin{small}
-\begin{sc}
-\begin{tabular}{lcccr}
-\hline
-\abovespace\belowspace
-Data set & Naive & Flexible & Better? \\
-\hline
-\abovespace
-Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
-Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
-Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
-Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
-Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
-Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
-Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
-\belowspace
-Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
-\hline
-\end{tabular}
-\end{sc}
-\end{small}
-\end{center}
-\vskip -0.1in
-\end{table}
+We have found that the need to assign initially random weights to the neural network can make the initial policies very flawed. To counter this, we plan to use heavy exploration bias (high $\epsilon$) for early episodes, while transitioning to exploitation policies (low $\epsilon$) at later episodes.
 
-Tables contain textual material that can be typeset, as contrasted 
-with figures, which contain graphical material that must be drawn. 
-Specify the contents of each row and column in the table's topmost
-row. Again, you may float tables to a column's top or bottom, and set
-wide tables across both columns, but place two-column tables at the
-top or bottom of the page.
- 
-\subsection{Citations and References} 
-
-Please use APA reference format regardless of your formatter
-or word processor. If you rely on the \LaTeX\/ bibliographic 
-facility, use {\tt natbib.sty} and {\tt icml2014.bst} 
-included in the style-file package to obtain this format.
-
-Citations within the text should include the authors' last names and
-year. If the authors' names are included in the sentence, place only
-the year in parentheses, for example when referencing Arthur Samuel's
-pioneering work \yrcite{Samuel59}. Otherwise place the entire
-reference in parentheses with the authors and year separated by a
-comma \cite{Samuel59}. List multiple references separated by
-semicolons \cite{kearns89,Samuel59,mitchell80}. Use the `et~al.'
-construct only for citations with three or more authors or after
-listing all authors to a publication in an earlier reference \cite{MachineLearningI}.
-
-The references at the end of this document give examples for journal
-articles \cite{Samuel59}, conference publications \cite{langley00}, book chapters \cite{Newell81}, books \cite{DudaHart2nd}, edited volumes \cite{MachineLearningI}, 
-technical reports \cite{mitchell80}, and dissertations \cite{kearns89}. 
-
-Alphabetize references by the surnames of the first authors, with
-single author entries preceding multiple author entries. Order
-references for the same authors by year of publication, with the
-earliest first. Make sure that each reference includes all relevant
-information (e.g., page numbers).
-
+\subsubsection{Extension to Atari Platformers}
+We have setup the ALE environment, and connected default agents to it. However, we have yet to attempt to port our Mario agents to these problems.
  
 \section*{Acknowledgments} 
  
-If you did this work in collaboration with someone else, or if someone else (such as another
-professor) had advised you on this work, your report must fully acknowledge their contributions. If you received external help or assistance on this project, you must cite these sources here in the acknowledgements section.  If you do not have anything to list in this section, write simply ``None.''
+None.
 
-\bibliography{example_paper}
+\bibliography{final_report}
 \bibliographystyle{icml2014}
 
 \end{document} 

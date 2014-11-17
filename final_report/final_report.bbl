@@ -1,0 +1,38 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bellemare et~al.(2013)Bellemare, Naddaf, Veness, and
+  Bowling]{bellemare13}
+Bellemare, Marc~G, Naddaf, Yavar, Veness, Joel, and Bowling, Michael.
+\newblock The arcade learning environment: An evaluation platform for general
+  agents.
+\newblock \emph{Journal of Artificial Intelligence Research}, 47:\penalty0
+  253--279, 2013.
+
+\bibitem[Mnih et~al.(2013)Mnih, Kavukcuoglu, Silver, Graves, Antonoglou,
+  Wierstra, and Riedmiller]{Mnih13}
+Mnih, Volodymyr, Kavukcuoglu, Koray, Silver, David, Graves, Alex, Antonoglou,
+  Ioannis, Wierstra, Daan, and Riedmiller, Martin.
+\newblock Playing atari with deep reinforcement learning.
+\newblock \emph{NIPS Workshop on Deep Learning and Unsupervised Feature
+  Learning}, 2013.
+
+\bibitem[Tanner \& White(2009)Tanner and White]{Tanner09}
+Tanner, Brian and White, Adam.
+\newblock Rl-glue: Language-independent software for reinforcement-learning
+  experiments.
+\newblock \emph{Journal of Machine Learning Research}, 10:\penalty0 2133--2136,
+  2009.
+
+\bibitem[Togelius et~al.(2010)Togelius, Karakovskiy, and
+  Baumgarten]{Togelius10}
+Togelius, J., Karakovskiy, S., and Baumgarten, R.
+\newblock The 2009 mario ai competition.
+\newblock \emph{Evolutionary Computation (CEC), 2010 IEEE Congress on.}, pp.\
+  1--8, 2010.
+
+\end{thebibliography}

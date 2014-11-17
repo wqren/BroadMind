@@ -154,6 +154,8 @@ Right now, our Mario agent can parse the observations from the RLGlue interface 
 
 [An Open Source Deep Q-Learning Implemtation](https://github.com/spragunr/deep_q_rl)
 
+[Overview of Neural Approaches to Atari](http://www.cs.utexas.edu/~mhauskn/papers/atari.pdf)
+
 [Mario AI Competition 2009](http://julian.togelius.com/Togelius2010The.pdf)
 
 [A-Star Mario AI Project](https://github.com/jumoel/mario-astar-robinbaumgarten)
