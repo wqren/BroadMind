@@ -1,5 +1,24 @@
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+from li_nn import NeuralNet
+# from nn import NeuralNet
+=======
+>>>>>>> Stashed changes
 import random
 from nn import NeuralNet
+>>>>>>> FETCH_HEAD
+
+class Experience():
+    def __init__(self, s1, a1, r, s2, a2):
+        '''
+        Our experiences include the full SARSA (not just SARS like DeepMind) so we can do a SARSA update if we want
+        '''
+        self.s1 = s1
+        self.s2 = s2
+        self.a1 = a1
+        self.a2 = a2
+        self.r = r
 
 class Experience():
     def __init__(self, s1, a1, r, s2, a2):
