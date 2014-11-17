@@ -13,8 +13,6 @@ class NeuralNet:
         self.layers = layers
         self.epsilon = epsilon
         self.learningRate = learningRate
-        self.numEpochs = 1
-        self.nclasses = None
         self.activation = None
         self.regLambda = 0.1
         self.converge = 0.01
@@ -49,88 +47,56 @@ class NeuralNet:
             theta[i]=theta_vec[flag:(flag+size)].reshape(layers[i+1],-1)
             flag = flag+size
         
+        # record vector for converge condition
+        grad = np.empty((length-1), dtype=object)
+        derivative = np.empty((length-1),dtype=object)
         
-        # start loop with numEpoch = 10
-        for iteration in range(0,self.numEpochs):
-            # record vector for converge condition
-            old_vec = np.copy(theta_vec)
-            grad = np.empty((length-1), dtype=object)
-            derivative = np.empty((length-1),dtype=object)
-            cost_p1 = 0
-            n = 1
-            
-            # perform forward propogation
-            error = np.empty((length),dtype=object)
-            out_fprop = a
-            
-            # increment cost func
-            for l in range(0,len(Y)):
-                if (out_fprop[l][0] == 1):
-                    out_fprop[l] = out_fprop[l] - 0.0001
-                suml = Y[l] * np.log(out_fprop[l][0]) + (1. -Y[l]) * np.log(1. - out_fprop[l][0])
-                cost_p1 += suml
+        # perform forward propogation
+        error = np.empty((length),dtype=object)
+        out_fprop = a
 
-            # activation 0~ l-1, without bias node
-            activation = self.activation
-            error[length-1] = activation[length-1] - Y.reshape(-1,1)
-            # calculate error for each layer
-            for j in range(length-2,0,-1):
-                p1 = np.dot(theta[j].T,error[j+1])
-                p2 = np.multiply(activation[j], (1-activation[j]))
-                error[j]= np.multiply(p1,p2)
-            
-            error[Y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed   
-            
-            # calculate gradient
-            if grad[length-2] == None:
-                grad[length-2] = np.dot(error[length-1],activation[length-2].T)
+        # activation 0~ l-1, with bias node
+        activation = self.activation
+        error[length-1] = a - Y.reshape(-1,1)
+        # calculate error for each layer
+        for j in range(length-2,0,-1):
+            p1 = np.dot(theta[j].T,error[j+1])
+            p2 = np.multiply(activation[j], (1-activation[j]))
+            error[j]= np.multiply(p1,p2)
+        
+        error[Y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed   
+        
+        # calculate gradient
+        if grad[length-2] == None:
+            grad[length-2] = np.dot(error[length-1],activation[length-2].T)
+        else:
+            grad[length-2] = grad[length-2] + np.dot(error[length-1],activation[length-2].T)
+    
+        for k in range(length-3,-1,-1):
+            if grad[k] == None:
+                grad[k] = np.dot(error[k+1][1:],activation[k].T)
+
             else:
-                grad[length-2] = grad[length-2] + np.dot(error[length-1],activation[length-2].T)
-        
-            for k in range(length-3,-1,-1):
-                if grad[k] == None:
-                    grad[k] = np.dot(error[k+1][1:],activation[k].T)
+                grad[k] = grad[k] + np.dot(error[k+1][1:],activation[k].T)
 
-                else:
-                    grad[k] = grad[k] + np.dot(error[k+1][1:],activation[k].T)
+        # compute partial derivative
+        for i in range(length-2,-1,-1):
+            row, col = theta[i].shape
+            temp = np.c_[np.zeros((row,1)),self.regLambda * theta[i][:,1:]]
+            derivative[i] = grad[i] + temp
 
-            # compute partial derivative
-            for i in range(length-2,-1,-1):
-                row, col = theta[i].shape
-                # print "theta[%d]" %i, theta[i].shape
-                # print grad[i].shape
-                temp = np.c_[np.zeros((row,1)),self.regLambda * theta[i][:,1:]]
-                # temp = np.vstack((np.zeros((1,col)),self.regLambda * theta[i][1:,:]))
-                # derivative[i] =1./n * (grad[i] + temp)
-                derivative[i] = 1./ n * (grad[i] + temp)
+        # update weights
+        for i in range(0,length-1):
+            theta[i] = theta[i] - self.learningRate * derivative[i]
+    
+        # unroll matrices into a single vector
+        theta_vec = np.array([])
+        for i in range(0,length-1):
+            theta_vec = np.append(theta_vec, theta[i].flatten())
 
-            # update weights
-            for i in range(0,length-1):
-                theta[i] = theta[i] - self.learningRate * derivative[i]
-        
-            # print "theta_update: \n", theta
-        
-            # unroll matrices into a single vector
-            theta_vec = np.array([])
-            for i in range(0,length-1):
-                theta_vec = np.append(theta_vec, theta[i].flatten())
-            
-            # record new vector
-            new_vec = np.copy(theta_vec)
-            # calculate cost func
-            para1 = -1. / n
-            cost_p1 = cost_p1 * para1
-            para2 = self.regLambda / (2. * n)
-            cost_reg = para2 * (np.linalg.norm(theta_vec) ** 2)
+        # calculate cost func
+        self.theta = np.copy(theta_vec)
 
-            cost_func = cost_p1 + cost_reg
-            print "%d cost_func: %.4f" % (iteration,cost_func)
-            print np.linalg.norm(new_vec - old_vec)
-
-            if (np.linalg.norm(new_vec - old_vec) < self.converge) or (iteration == self.numEpochs-1):
-                self.theta = np.copy(theta_vec)
-                # print "################", self.theta
-                break
               
 
     def propagate(self, X):

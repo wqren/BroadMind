@@ -1,5 +1,6 @@
-import random
 from li_nn import NeuralNet
+# from nn import NeuralNet
+import random
 
 class Experience():
     def __init__(self, s1, a1, r, s2, a2):
