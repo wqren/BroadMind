@@ -38,6 +38,7 @@
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
 \usepackage{icml2014} 
+%\usepackage{multicols}
 
 
 % The \icmltitle you define below is probably too long as a header.
@@ -89,6 +90,17 @@ Generalized Mario's interface provides many layers of state observation. It incl
 
 \subsubsection{Arcade Learning Environment}
 We have leveraged the Arcade Learning Environment, an open-source and RL-Glue compatible framework built on top of an Atari 2600 emulator \cite{bellemare13}.  It provides an API for interfacing with the raw pixels, the current score, and the controller input of the game. This has allowed us to use original Atari games to train and evaluate our agents. We currently support 7 Atari platformers in our experimental setup:
+%\begin{multicols}{2}
+\begin{enumerate} [topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+\item Kung-Fu Master
+\item Frostbite
+\item Kangaroo
+\item Pitfall!
+\item Pitfall! 2
+\item H.E.R.O.
+\item Montezuma's Revenge
+\end{enumerate}
+%\end{multicols}
 
 \subsection{Learning Algorithms}
 
