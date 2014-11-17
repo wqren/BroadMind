@@ -1,5 +1,5 @@
 import random
-from nn import NeuralNet
+from li_nn import NeuralNet
 
 class Experience():
     def __init__(self, s1, a1, r, s2, a2):
@@ -32,6 +32,7 @@ class QNN():
 
     def __init__(self, nactions, input_size, max_experiences=500, gamma=0.6, alpha=0.1, use_sarsa=False):
         lay = [input_size, int((nactions+input_size)/2.0), nactions]
+        self.nactions = nactions
         self.NN = NeuralNet(layers=lay, epsilon=0.04, learningRate=alpha)
         self.experiences = []
         self.max_experiences = max_experiences
@@ -49,7 +50,6 @@ class QNN():
             return out
         return out[a]
 
-
     def Update(self, s1, a1, r, s2, a2):
         """ update action value for action(a)
         """
@@ -57,8 +57,9 @@ class QNN():
             v = r + self.gamma*self.GetValue(s2, a2)
         else:
             v = r + self.gamma*max(self.GetValue(s2))
-        self.RememberExperience(s1, a1, r, s2, a2)
-        self.NN.propagateAndUpdate(s1, a1*v)
+        a = np.zeros(self.nactions)
+        a[a1] = v
+        self.NN.propagateAndUpdate(s1, a)
 
     def RememberExperience(self, s1, a1, r, s2, a2):
         if (random.random() < self.prob_remember):

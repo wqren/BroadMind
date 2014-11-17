@@ -127,7 +127,7 @@ Typically, Q-Learning approaches use a table representing the Q-function. This t
 We have implemented a neural-network based Q-learning algorithm (see Algorithm~\ref{alg:q-learn}) to allow us to learn on large state/action spaces with reasonable memory utilization by finding a useful hidden layer. Inspired by DeepMind's approach, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. We can optionally use the standard Q-Learning update, or the SARSA calculation.
 
 \begin{algorithm}[tb]
-   \caption{Neural Q-Learning}
+   \caption{Neural Q-Network with Experience Replay}
    \label{alg:q-learn}
 \begin{algorithmic}
    \STATE Initialize Neural Q-Network with random weights

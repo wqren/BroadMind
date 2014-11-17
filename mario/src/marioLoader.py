@@ -43,7 +43,7 @@ def main():
 	levelDifficulty - 0..10, how hard it is. 
 	instance - 0..9, determines which Mario you run.	
 	'''
-	loadMario(False, False, random.randint(0,1000), 0, 10, whichTrainingMDP);
+	loadMario(False, False, random.randint(0,1000), 0, 0, whichTrainingMDP);
 
 	RLGlue.RL_init()
 

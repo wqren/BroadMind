@@ -41,20 +41,18 @@ tileEncoder = {'\0': -1, '1': -1, '2': -1, '3': -1, '4': -1, '5': -1, '6': -1, '
 class MarioAgent(Agent):
 	
     def agent_init(self,taskSpecString):
-        self.learn_mode = 1 #O = Random, 1 = Neural Q-Function
         self.policy_frozen = False
         self.total_steps = 0
         self.trial_start = 0.0
         self.total_steps = 0
         self.step_number = 0
-        self.exp = 0.95 #Exploration factor
+        self.exp = 0.75 #Exploration factor
         self.state_dim_x = 20
         self.state_dim_y = 12
         self.last_state = None
         self.last_action = None
         random.seed(0)
-        if (self.learn_mode == 1):
-            self.Q = QNN(nactions=12, input_size=(self.state_dim_x*self.state_dim_y), max_experiences=500, gamma=0.6, alpha=0.2)
+        self.Q = QNN(nactions=12, input_size=(self.state_dim_x*self.state_dim_y), max_experiences=500, gamma=0.6, alpha=0.2)
 	
     def agent_start(self,observation):
         self.step_number = 0
@@ -95,7 +93,7 @@ class MarioAgent(Agent):
             self.exp = 0.0
             return "message understood, exploring frozen"
         if inMessage.startswith("unfreeze_exploring"):
-            self.exp = 0.95
+            self.exp = 0.75
             return "message understood, exploring unfrozen"
         if inMessage.startswith("save_policy"):
             splitString=inMessage.split(" ");
@@ -166,20 +164,12 @@ class MarioAgent(Agent):
             print out_string
 
     def getAction(self, observation):
-        monsters = self.getMonsters(observation)
-        mario = self.getMario(observation)
-
-        if (self.learn_mode == 0):
-            act = self.randomAction(False)
-        elif (self.learn_mode == 1):
-            act = self.qnnAction(observation)
-
+        act = self.qnnAction(observation)
 	return act
 
     def update(self, observation, action, reward):
-        if (self.learn_mode == 1):
-            self.qnnUpdate(observation, action, reward)
-            self.Q.ExperienceReplay()
+        self.qnnUpdate(observation, action, reward)
+        self.Q.ExperienceReplay()
 
     def stateEncoder(self, observation):
         s = []
@@ -251,7 +241,7 @@ class MarioAgent(Agent):
         ls = self.stateEncoder(self.last_state)
         a = self.actionEncoder(action)
         la = self.actionEncoder(self.last_action)
-        self.Q.Update(ls, la, reward, s, a)
+        self.Q.RememberExperience(ls, la, reward, s, a)
 
     def saveQFun(self, fileName):
         theFile = open(fileName, "w")
