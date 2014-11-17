@@ -38,6 +38,7 @@
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
 \usepackage{icml2014} 
+\usepackage{multicols}
 
 
 % The \icmltitle you define below is probably too long as a header.
@@ -92,6 +93,7 @@ Our research aims to determine how to intelligently encode platform game state i
 
 \subsubsection{Arcade Learning Environment}
 We have leveraged the Arcade Learning Environment, an open-source and RL-Glue compatible framework built on top of an Atari 2600 emulator \cite{bellemare13}.  It provides an API for interfacing with the raw pixels, the current score, and the controller input of the game. This has allowed us to use original Atari games to train and evaluate our agents. We currently support the following Atari platformers in our experimental setup:
+\begin{multicols}{2}
 \begin{enumerate} [topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
 \item Kung-Fu Master
 \item Frostbite
@@ -101,6 +103,7 @@ We have leveraged the Arcade Learning Environment, an open-source and RL-Glue co
 \item H.E.R.O.
 \item Montezuma's Revenge
 \end{enumerate}
+\end{multicols}
 We plan to extend our Mario work to see if we can learn a similar state representation from the raw pixel inputs of ALE for these platform games.
 
 \subsection{Learning Algorithms}
