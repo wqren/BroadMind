@@ -89,15 +89,13 @@ class MarioAgent(Agent):
         if inMessage.startswith("unfreeze_learning"):
             self.policy_frozen=False
             return "message understood, policy unfrozen"
-        if inMessage.startswith("freeze_exploring"):
-            self.exp = 0.0
-            return "message understood, exploring frozen"
-        if inMessage.startswith("unfreeze_exploring"):
-            self.exp = 0.75
-            return "message understood, exploring unfrozen"
+        if inMessage.startswith("set_exploring"):
+            splitString=inMessage.split(" ")
+            self.exp = float(splitString[1])
+            return "message understood, setting exploration factor"
         if inMessage.startswith("save_policy"):
-            splitString=inMessage.split(" ");
-            self.saveQFun(splitString[1]);
+            splitString=inMessage.split(" ")
+            self.saveQFun(splitString[1])
             print "Saved.";
             return "message understood, saving policy"
         if inMessage.startswith("load_policy"):

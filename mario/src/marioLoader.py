@@ -43,11 +43,13 @@ def main():
 	levelDifficulty - 0..10, how hard it is. 
 	instance - 0..9, determines which Mario you run.	
 	'''
-	loadMario(False, False, random.randint(0,1000), 0, 0, whichTrainingMDP);
+	loadMario(False, False, random.randint(0,1000), 0, 1, whichTrainingMDP);
 
 	RLGlue.RL_init()
 
         #RLGlue.RL_agent_message("load_policy agents/exampleAgent.dat")
+
+	#RLGlue.RL_agent_message("set_exploring 0.5")
 
 	trainAgent()
 
