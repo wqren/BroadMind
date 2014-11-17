@@ -19,7 +19,7 @@ class QNN():
 
     def __init__(self, nactions, input_size, alpha=0.1):
         lay = [input_size, int((nactions+input_size)/2.0), nactions]
-        self.Q = NeuralNet(layers=lay, epsilon=0.12, learningRate=alpha)
+        self.Q = NeuralNet(layers=lay, epsilon=0.04, learningRate=alpha)
         
     def GetValue(self, s, a=None):
         """ Return the Q(s,a) value of state (s) for action (a)

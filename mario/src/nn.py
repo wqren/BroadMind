@@ -32,6 +32,7 @@ class NeuralNet:
         tht_tot = 0
         tot = self.layers[len(self.layers)-1]
         d = a[len(a)-tot:] - y
+        d[y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed
         deltas = np.zeros(len(self.thetas))
         for l in reversed(xrange(len(self.layers)-1)):
             size1 = self.layers[l]                    

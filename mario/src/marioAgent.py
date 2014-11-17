@@ -170,7 +170,7 @@ class MarioAgent(Agent):
         mario = self.getMario(observation)
 
         if (self.learn_mode == 0):
-            act = self.randomAction(observation)
+            act = self.randomAction(False)
         elif (self.learn_mode == 1):
             act = self.qnnAction(observation)
 
@@ -220,10 +220,13 @@ class MarioAgent(Agent):
         act.intArray.append(a % 2)
         return act
 
-    def randomAction(self, observation):
+    def randomAction(self, forwardBias):
         act = Action()
         #The first control input is -1 for left, 0 for nothing, 1 for right
-        act.intArray.append(random.randint(-1,1))
+        if (not forwardBias or random.random() < 0.1):
+            act.intArray.append(random.randint(-1,1))
+        else:
+            act.intArray.append(random.randint(0,1))
         #The second control input is 0 for nothing, 1 for jump
         act.intArray.append(random.randint(0,1))
         #The third control input is 0 for nothing, 1 for speed increase
@@ -235,10 +238,9 @@ class MarioAgent(Agent):
         #self.printEncodedState(s)
         if (random.random()>self.exp):
             a = np.argmax(self.Q(s))
+            act = self.actionDecoder(a)
         else:
-            #TODO: Bias the exploration towards moving forward?
-            a  = random.randint(0,12)
-        act = self.actionDecoder(a)
+            act = self.randomAction(True)
         return act
 
     def qnnUpdate(self, observation, action, reward):
