@@ -67,7 +67,7 @@ class MarioAgent(Agent):
         self.step_number += 1
         self.total_steps += 1
         act = self.getAction(observation)
-        if (!self.policy_frozen):
+        if (not self.policy_frozen):
             self.update(observation, act, reward)
         self.last_state = observation
         self.last_action = act
