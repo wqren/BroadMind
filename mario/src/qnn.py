@@ -34,7 +34,7 @@ class QNN():
     def __init__(self, nactions, input_size, max_experiences=500, gamma=0.6, alpha=0.1, use_sarsa=False):
         lay = [input_size, int((nactions+input_size)/2.0), nactions]
         self.nactions = nactions
-        self.NN = NeuralNet(layers=lay, epsilon=0.04, learningRate=alpha)
+        self.NN = NeuralNet(layers=lay, epsilon=0.154, learningRate=alpha)
         self.experiences = []
         self.max_experiences = max_experiences
         self.gamma = gamma
