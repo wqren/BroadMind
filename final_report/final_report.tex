@@ -117,7 +117,7 @@ We plan to extend our Mario work to see if we can learn a similar state represen
 
 \subsubsection{State Representation in Mario}
 It is challenging to find a powerful representation of the Mario game state that enables effective Reinforcement Learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many ambiguities that we are investigating. For example, what coordinate frame should be used?  \\
-Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location.
+Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location. We intend to represent the state with separate substrates for each class of objects, as in \cite{Hauskneck13}, by break it out into separate background, enemy, reward, and actor layer. We hope to find that this representation will be universal across platform games.
 
 
 \subsubsection{Neural Q-Learning}
@@ -156,7 +156,7 @@ We have implemented a neural-network based Q-learning algorithm (see Algorithm~\
 We have found that the need to assign initially random weights to the neural network can make the initial policies very flawed. To counter this, we plan to use heavy exploration bias (high $\epsilon$) for early episodes, while transitioning to exploitation policies (low $\epsilon$) at later episodes.
 
 \subsubsection{Extension to Atari Platformers}
-We have setup the ALE environment, and connected default agents to it. However, we have yet to attempt to port our Mario agents to these problems.
+We have setup the ALE environment, and connected default agents to it. However, we have yet to attempt to port our Mario agents to these problems. Initially, we will use 3 colored pixel substrates as the state representation, as in \cite{Hauskneck13}, but we hope to reconstruct an object layer as well.
  
 \section*{Acknowledgments} 
  

@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -12,6 +12,13 @@ Bellemare, Marc~G, Naddaf, Yavar, Veness, Joel, and Bowling, Michael.
   agents.
 \newblock \emph{Journal of Artificial Intelligence Research}, 47:\penalty0
   253--279, 2013.
+
+\bibitem[Hausknecht et~al.(2013)Hausknecht, Lehman, Miikkulainen, and
+  Stone]{Hauskneck13}
+Hausknecht, M., Lehman, J., Miikkulainen, R., and Stone, P.
+\newblock A neuroevolution approach to general atari game playing.
+\newblock \emph{IEEE Transactions on Computational Intelligence and AI in
+  Games}, 2013.
 
 \bibitem[Mnih et~al.(2013)Mnih, Kavukcuoglu, Silver, Graves, Antonoglou,
   Wierstra, and Riedmiller]{Mnih13}
