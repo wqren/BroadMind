@@ -10,7 +10,7 @@ from consoleTrainerHelper import *
 def trainAgent():
         episodesToRun = 1000
         totalSteps = 0
-	exp = 0.75
+	exp = 1.0
 	raw_results = []
         for i in range(episodesToRun):
 		if (i % 100 == 0):
