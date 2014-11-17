@@ -2,7 +2,7 @@ import numpy as np
 
 class NeuralNet:
 
-    def __init__(self, layers, epsilon=0.12, learningRate = 0.1):
+    def __init__(self, layers, epsilon=0.154, learningRate = 0.1):
         '''
         Constructor
         Arguments:
