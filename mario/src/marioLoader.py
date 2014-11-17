@@ -33,7 +33,7 @@ def testAgent():
 	RLGlue.RL_agent_message("unfreeze learning");
 
 def main():
-	whichTrainingMDP = 1
+	whichTrainingMDP = 0
         '''
 	Parameter definition:
 	fast - determines if Mario runs very fast or at playable-speed. Set it to true to train your agent, false if you want to actually see what is going on.

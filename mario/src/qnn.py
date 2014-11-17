@@ -1,6 +1,7 @@
 from li_nn import NeuralNet
 # from nn import NeuralNet
 import random
+import numpy as np
 
 class Experience():
     def __init__(self, s1, a1, r, s2, a2):
@@ -39,7 +40,7 @@ class QNN():
         self.max_experiences = max_experiences
         self.gamma = gamma
         self.use_sarsa = use_sarsa
-        self.prob_remember = 0.01
+        self.prob_remember = 0.1
         self.num_replay_samples = 10
         
     def GetValue(self, s, a=None):

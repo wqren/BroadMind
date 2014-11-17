@@ -64,7 +64,7 @@ class NeuralNet:
             p2 = np.multiply(activation[j], (1-activation[j]))
             error[j]= np.multiply(p1,p2)
         
-        error[Y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed   
+        error[length-1][Y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed   
         
         # calculate gradient
         if grad[length-2] == None:
