@@ -47,7 +47,11 @@ def main():
 
 	RLGlue.RL_init()
 
+        #RLGlue.RL_agent_message("load_policy agents/exampleAgent.dat")
+
 	trainAgent()
+
+	#RLGlue.RL_agent_message("save_policy agents/exampleAgent.dat")
 
 	#testAgent()
 

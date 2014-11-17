@@ -1,6 +1,7 @@
 import random
 import time
 import string
+import pickle
 from rlglue.agent.Agent import Agent
 from rlglue.types import Action
 from rlglue.types import Observation
@@ -85,24 +86,24 @@ class MarioAgent(Agent):
         pass
 	
     def agent_message(self,inMessage):
-        if inMessage.startswith("freeze learning"):
+        if inMessage.startswith("freeze_learning"):
             self.policy_frozen=True
             return "message understood, policy frozen"
-        if inMessage.startswith("unfreeze learning"):
+        if inMessage.startswith("unfreeze_learning"):
             self.policy_frozen=False
             return "message understood, policy unfrozen"
-        if inMessage.startswith("freeze exploring"):
+        if inMessage.startswith("freeze_exploring"):
             self.exp = 0.0
             return "message understood, exploring frozen"
-        if inMessage.startswith("unfreeze exploring"):
+        if inMessage.startswith("unfreeze_exploring"):
             self.exp = 0.95
             return "message understood, exploring unfrozen"
-        if inMessage.startswith("save policy"):
+        if inMessage.startswith("save_policy"):
             splitString=inMessage.split(" ");
             self.saveQFun(splitString[1]);
             print "Saved.";
             return "message understood, saving policy"
-        if inMessage.startswith("load policy"):
+        if inMessage.startswith("load_policy"):
             splitString=inMessage.split(" ")
             self.loadQFun(splitString[1])
             print "Loaded."
@@ -258,16 +259,14 @@ class MarioAgent(Agent):
         #self.Q.Update(ls, la, target_value)
 
     def saveQFun(self, fileName):
-        '''
-        TODO: Implement saving off NN with pickle
-        '''
-        pass
+        theFile = open(fileName, "w")
+        pickle.dump(self.Q, theFile)
+        theFile.close()
 
     def loadQFun(self, fileName):
-        '''
-        TODO: Implement loading NN with pickle
-        '''
-        pass
+        theFile = open(fileName, "r")
+        self.Q = pickle.load(theFile)
+        theFile.close()
 
 if __name__=="__main__":        
     AgentLoader.loadAgent(MarioAgent())
