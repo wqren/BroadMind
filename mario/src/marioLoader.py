@@ -4,19 +4,32 @@
 
 import random
 import rlglue.RLGlue as RLGlue
+import matplotlib.pyplot as plt
 from consoleTrainerHelper import *
 
 def trainAgent():
-        episodesToRun = 50
+        episodesToRun = 1000
         totalSteps = 0
+	exp = 0.75
+	raw_results = []
         for i in range(episodesToRun):
+		if (i % 100 == 0):
+			if (exp > 0.1):
+				exp -= 0.05
+			RLGlue.RL_agent_message("set_exploring " + str(exp)) 
                 RLGlue.RL_episode(2000)
 		thisSteps = RLGlue.RL_num_steps()
                 print "Total steps in episode %d is %d" %(i, thisSteps)
                 thisReturn = RLGlue.RL_return()
-                print "Total return in episode %d is %d" %(i, thisReturn)
+                print "Total return in episode %d is %f" %(i, thisReturn)
+		raw_results.append(thisReturn)
                 totalSteps += thisSteps
         print "Total steps : %d\n" % (totalSteps)
+	results = []
+	for i in range(100,episodesToRun):
+		results.append(sum(raw_results[i-100:i])/100.0)
+	plt.plot(results)
+	plt.show()
 
 def testAgent():
         episodesToRun = 50
@@ -25,9 +38,9 @@ def testAgent():
         for i in range(episodesToRun):
                 RLGlue.RL_episode(2000)
                 thisSteps = RLGlue.RL_num_steps()
-                print "Total steps in episode %d is %d" %(i, thisSteps)
+                print "Total steps in episode %d is %fd" %(i, thisSteps)
                 thisReturn = RLGlue.RL_return()
-                print "Total return in episode %d is %d" %(i, thisReturn)
+                print "Total return in episode %d is %f" %(i, thisReturn)
                 totalSteps += thisSteps
         print "Total steps : %d\n" % (totalSteps)
 	RLGlue.RL_agent_message("unfreeze learning");
@@ -43,13 +56,11 @@ def main():
 	levelDifficulty - 0..10, how hard it is. 
 	instance - 0..9, determines which Mario you run.	
 	'''
-	loadMario(False, False, random.randint(0,1000), 0, 1, whichTrainingMDP);
+	loadMario(True, False, 0, 0, 1, whichTrainingMDP);
 
 	RLGlue.RL_init()
 
         #RLGlue.RL_agent_message("load_policy agents/exampleAgent.dat")
-
-	#RLGlue.RL_agent_message("set_exploring 0.5")
 
 	trainAgent()
 
