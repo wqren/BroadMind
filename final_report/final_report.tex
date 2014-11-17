@@ -158,6 +158,13 @@ We have found that the need to assign initially random weights to the neural net
  
 We trained agents over 1000 episodes in the Mario environment using the state encoded in the format described in section 2.2.1, and using the Neural Q-Network with experience replay of Algorithm~\ref{alg:q-learn}. We use Mario level of difficulty 1 so that the levels provide a challenge with enemies, but not so hard that a random agent cannot make considerable progress.
  
+ \begin{figure}
+ \begin{center}
+\includegraphics[scale=0.3]{progress_report.png}
+\caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 1000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
+\end{center}
+\end{figure}
+  
  We have yet to optimize our agents over the space of configuration parameters (learning rate, regularization, max number of experiences, probability of remembering an experience, discount factor on future rewards). Also, we have not yet attempted to train an agent on a particular level, and evaluate its performance on a new level of a different difficulty level.
  
 \section*{Acknowledgments} 
