@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  17 NOV 2014 20:28
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  17 NOV 2014 20:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -414,17 +414,12 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 69.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 80.
-[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-
-
-
-]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 127.
+(Font)              <7> on input line 109.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 127.
+(Font)              <5> on input line 109.
 
-Underfull \hbox (badness 7397) in paragraph at lines 136--137
+Underfull \hbox (badness 7397) in paragraph at lines 118--119
 [] []\OT1/ptm/m/n/10 With prob-a-bil-ity $\OML/cmm/m/it/10 ^^O[]$\OT1/ptm/m/n/1
 0 , store the ex-pe-ri-ence
  []
@@ -432,42 +427,45 @@ Underfull \hbox (badness 7397) in paragraph at lines 136--137
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
-<progress_report.png, id=44, 578.16pt x 433.62pt>
+
+
+]
+<progress_report.png, id=32, 578.16pt x 433.62pt>
 File: progress_report.png Graphic file (type png)
  <use progress_report.png>
-Package pdftex.def Info: progress_report.png used on input line 165.
+Package pdftex.def Info: progress_report.png used on input line 147.
 (pdftex.def)             Requested size: 242.82555pt x 182.11916pt.
 
-Overfull \hbox (7.94804pt too wide) in paragraph at lines 165--166
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 147--148
  [] 
  []
 
 (./final_report.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 179.
+ [2 <./progress_report.png>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 166.
+ [3
 
-[3
-
- <./progress_report.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 179.
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 166.
  (./final_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 179.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 179.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 166.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 166.
 Package rerunfilecheck Info: File `final_report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 179.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 166.
  ) 
 Here is how much of TeX's memory you used:
- 6637 strings out of 493315
- 97050 string characters out of 6137904
- 206627 words of memory out of 5000000
- 9984 multiletter control sequences out of 15000+600000
+ 6613 strings out of 493315
+ 96618 string characters out of 6137904
+ 207627 words of memory out of 5000000
+ 9970 multiletter control sequences out of 15000+600000
  19378 words of font info for 34 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 33i,12n,45p,755b,652s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 33i,11n,45p,1010b,654s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
 xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texl
@@ -479,10 +477,10 @@ e/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 t/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on final_report.pdf (3 pages, 171524 bytes).
+Output written on final_report.pdf (3 pages, 170415 bytes).
 PDF statistics:
- 113 PDF objects out of 1000 (max. 8388607)
- 95 compressed objects within 1 object stream
- 31 named destinations out of 1000 (max. 500000)
+ 101 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
+ 21 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
