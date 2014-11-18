@@ -15,7 +15,6 @@ class NeuralNet:
         self.learningRate = learningRate
         self.activation = None
         self.regLambda = 0.1
-        self.converge = 0.01
         
         # random.rand gives random number between 0,1, need between -eps, +eps
         length = len(layers)
@@ -46,6 +45,7 @@ class NeuralNet:
             size = layers[i+1] * (layers[i]+1)
             theta[i]=theta_vec[flag:(flag+size)].reshape(layers[i+1],-1)
             flag = flag+size
+            # print "###########", theta[i].shape
         
         # record vector for converge condition
         grad = np.empty((length-1), dtype=object)
@@ -63,6 +63,8 @@ class NeuralNet:
             p1 = np.dot(theta[j].T,error[j+1])
             p2 = np.multiply(activation[j], (1-activation[j]))
             error[j]= np.multiply(p1,p2)
+            if j > 1:
+                error[j]= error[j][1:]
         
         error[length-1][Y==0.0] == 0.0 #IMPORTANT: This step makes us only update the action that we observed   
         
@@ -74,11 +76,15 @@ class NeuralNet:
     
         for k in range(length-3,-1,-1):
             if grad[k] == None:
-                grad[k] = np.dot(error[k+1][1:],activation[k].T)
+                grad[k] = np.dot(error[k+1],activation[k].T)
 
             else:
-                grad[k] = grad[k] + np.dot(error[k+1][1:],activation[k].T)
-
+                grad[k] = grad[k] + np.dot(error[k+1],activation[k].T)
+            # print "index:", k
+            # print "grad shape", grad[k].shape
+            # print "theta :", theta[k].shape
+            if k == 0:
+                grad[k] = grad[k][1:,:]
         # compute partial derivative
         for i in range(length-2,-1,-1):
             row, col = theta[i].shape
