@@ -125,7 +125,14 @@ class MarioAgent(Agent):
         monsters = self.getMonsters(observation)
         for i in xrange(len(monsters)):
             if (monsters[i].type == 0 or monsters[i].type == 10 or monsters[i].type == 11):
-                return monsters[i]
+                return (monsters[i].x-observation.intArray[0], monsters[i].y)
+        return None
+
+    def getMarioFromTiles(self, observation):
+        for xi in xrange(22):
+            for yi in xrange(16):
+                if (self.getTileAt(xi, yi, observation) == 'M'):
+                    return (xi, yi)
         return None
 
     def getTileAt(self, x, y, observation):
@@ -150,7 +157,7 @@ class MarioAgent(Agent):
     #Handy little functio for debugging by printing out Mario's (x,y) position
     def printMarioState(self, observation):
         mar = self.getMario(observation)
-        print "Mario X: " + str(mar.x) + " Mario Y: " + str(mar.y)
+        print "Mario X: " + str(mar[0]) + " Mario Y: " + str(mar[1])
 
     #Handy little function for debugging by printing out the encoded state that is being send to the NN
     def printEncodedState(self, s):
@@ -173,8 +180,8 @@ class MarioAgent(Agent):
         s = []
         #Determine Mario's current position. Everything is relative to Mario
         mar = self.getMario(observation)
-        mx = int(mar.x)
-        my = 15 - int(mar.y)
+        mx = int(mar[0])
+        my = 15 - int(mar[1])
         #Update based on the environment
         for yi in xrange(self.state_dim_y):
             for xi in xrange(self.state_dim_x):
@@ -191,7 +198,7 @@ class MarioAgent(Agent):
                 continue
             monx = int(monsters[mi].x)
             mony = 15 - int(monsters[mi].y)
-            x = monx - mx + int(self.state_dim_x/2.0)
+            x = monx - mx + int(self.state_dim_x/2.0) - observation.intArray[0]
             y = mony - my + int(self.state_dim_y/2.0)
             if (x < 0 or x >= self.state_dim_x or y < 0 or y >= self.state_dim_y): #skip monsters farther away
                 continue
