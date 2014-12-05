@@ -87,22 +87,36 @@ We have started evaluating our agents in the Generalized Mario environment. This
 
 We have leveraged the Arcade Learning Environment, an RL-Glue compatible framework built on top of an Atari 2600 emulator \cite{bellemare13}.  It provides an API for interfacing with the raw pixels, the current score, and the controller input of the game. This has allowed us to use original Atari games to train and evaluate our agents. We currently support 7 Atari platformers in our experimental setup:
 
-%\begin{multicols}{2}
-%\begin{enumerate} [topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
-%\item Montezumas Revenge
-%\item Kung-Fu Master
-%\item Frostbite
-%\item Kangaroo
-%\item Pitfall!
-%\item Pitfall! 2
-%\item H.E.R.O.
-%\end{enumerate}
-%\end{multicols}
+\begin{multicols}{2}
+\begin{enumerate} [topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+\item Montezumas Revenge
+\item Kung-Fu Master
+\item Frostbite
+\item Kangaroo
+\item Pitfall!
+\item Pitfall! 2
+\item H.E.R.O.
+\end{enumerate}
+\end{multicols}
 
 \subsection{Learning Algorithms}
 
+ \begin{figure}
+ \begin{center}
+\includegraphics[scale=0.35]{mario_screenshot.png}
+\caption{Raw pixels representing the state of the mario game, as it would be seen by a player.}
+\includegraphics[scale=0.42]{game_state.png}
+\caption{The equiivalent game state encoded as symbolic characters, as provided to the learning agent by the Mario environment in each timestep.}
+\includegraphics[scale=0.43]{encoded_state.png}
+\caption{Our encoding of the game state in a 20x12 grid with Mario at the center, as provided to the Neural Q-Network. Larger postive values correspond to positive symbols such as coins and free space, and negative values correspond to negative symbols such as enemies and obstacles.}
+\end{center}
+\end{figure}
+
+\subsubsection{State Representation in Mario}
+It is challenging to find an effective representation of the Mario game state that enables effective Q-learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many possible encodings that we are investigating. Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location. We intend to represent the state with separate substrates for each class of objects, as in \cite{Hauskneck13}, by breaking it out into separate background, enemy, reward, and actor layers. We hope to find that this representation will be universal across platform games. None of these representations encode the important velocity information about the actors, which is important in platformers where the characters move with some inertia.
+
 \begin{algorithm}[tb]
-   \caption{Neural Q-Network with Experience Replay}
+   \caption{Neural Q-Network with Impactful Experience Replay}
    \label{alg:q-learn}
 \begin{algorithmic}
    \STATE Initialize Neural Q-Network with random weights
@@ -110,12 +124,13 @@ We have leveraged the Arcade Learning Environment, an RL-Glue compatible framewo
    \FOR{episode$ = 1, m$}
    \STATE Initialize previous state $s_0$ and previous action $a_0$ to NULL
    \FOR{$t = 1, T$}
+   \STATE Compute the mean and standard deviation of absolute value of the rewards in the experience pool, $r_{ave}, r_{dev}$.
    \STATE Observe state $s_t$ from the emulator
    \STATE With probability $\epsilon_a$, select random action $a_t$
    \STATE Else, set $a_i = \max_a Q(s_t, a)$ by forward propagating $s_t$ through Q
    \IF{$s_{t-1}$ and $a_{t-1}$ are not NULL}
    \STATE Observe reward $r$ from emulator
-   \STATE With probability $\epsilon_r$, store the experience $\{s_{t-1}, a_{t-1}, r, s_t, a_t \}$ in the pool
+   \STATE With probability $\epsilon_r * (1 + \frac{|r| - r_{ave}}{r_{dev}})$, store the experience $\{s_{t-1}, a_{t-1}, r, s_t, a_t \}$ in the pool
    \ENDIF
    \FOR{re-experience$ = 1, ex$}
    \STATE Randomly sample experience $\{s'_0, a'_0, r', s'_1, a'_1 \}$ from the pool
@@ -133,19 +148,22 @@ We have leveraged the Arcade Learning Environment, an RL-Glue compatible framewo
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{State Representation in Mario}
-It is challenging to find an effective representation of the Mario game state that enables effective Q-learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many possible encodings that we are investigating. Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location. We intend to represent the state with separate substrates for each class of objects, as in \cite{Hauskneck13}, by breaking it out into separate background, enemy, reward, and actor layers. We hope to find that this representation will be universal across platform games. None of these representations encode the important velocity information about the actors, which is important in platformers where the characters move with some inertia.
-
 \subsubsection{Neural Q-Learning}
 
 Typically, Q-Learning approaches use a table representing the Q-function. For very large state/action spaces such as platforming games, this is impractical as the space would take too many trials to explore and converge on an optimal policy. Even using optimizations such as nearest neighbor ran out of memory for our Generalized Mario state representation. We have implemented a neural-network based Q-learning algorithm (see Algorithm~\ref{alg:q-learn}) to allow us to learn on large state/action spaces with reasonable memory utilization by finding a useful hidden layer. 
 
-Inspired by DeepMind's approach \cite{Mnih13}, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. Also like DeepMind, we include an Experience Replay step that stores a history of events to re-learn. This avoids overfitting to the current situation and unlearning good behavior from earlier episodes. We are actively investigating methods to store experiences more intelligently. Our algorithm can optionally use the standard Q-Learning update, or the SARSA calculation.
+Inspired by DeepMind's approach \cite{Mnih13}, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. Also like DeepMind, we include an Experience Replay step that stores a history of events to re-learn. This avoids overfitting to the current situation and unlearning good behavior from earlier episodes. Our algorithm can optionally use the standard Q-Learning update, or the SARSA calculation.
+
+We have adjusted the experience rememberance process to prioritize memorization of meaningful experiences. We observe that experiences corresponding with large positive or negative rewards are rare, but these are the experiences that provide the most value to the agent. To do this, we modify the probability of rememberance, multiplying by $1 + \frac{|r| - r_{ave}}{r_{dev}}$.
 
  \begin{figure}
  \begin{center}
 \includegraphics[scale=0.42]{progress_report.png}
 \caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 1000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
+\includegraphics[scale=0.42]{seed8.png}
+\caption{The same test performed with level seed 8. At its peak, the mean reward earned for the learned agent is roughly double that of random behavior}
+\includegraphics[scale=0.42]{seed20.png}
+\caption{Another test with level seed 20. This level has less available positive rewards, so the learned agent does not show the same level of performance improvement.}
 \end{center}
 \end{figure}
 
@@ -154,7 +172,25 @@ We have setup the ALE environment, and connected default agents to it. However, 
  
  \section{Results}
  
-We have found that the initial random weights in the neural network can make the early policies very flawed. To counter this, we use heavy exploration bias ($\epsilon ~ 1.0$) for early episodes, while transitioning to exploitation policies ($\epsilon$ ~ 0.1) at later episodes. We have also biased the random action to prefer motion to the right, helping the agent to explore more of the game. We trained agents over 1000 episodes in the Mario environment using the state encoded in the format described in section 2.2.1, and using the Neural Q-Network with experience replay of Algorithm~\ref{alg:q-learn}. We use Mario level of difficulty 1 so that the levels provide a challenge with enemies, but not so hard that a random agent cannot make considerable progress.
+ \begin{figure}
+\begin{center}
+\includegraphics[scale=0.42]{10000eps.png}
+\caption{Level seed 3 continued out to 10,000 episodes. Performance ceases to improve past episode 2,000.}
+\end{center}
+\end{figure}
+ 
+We have found that the initial random weights in the neural network can make the early policies very flawed. To counter this, we use heavy exploration bias ($\epsilon = 1.0$) for early episodes, while transitioning to exploitation policies ($\epsilon$ = 0.1) at later episodes. We have also biased the random action to prefer motion to the right, helping the agent to explore more of the game. We trained agents over 1000 episodes in the Mario environment using the state encoded in the format described in section 2.2.1, and using the Neural Q-Network with experience replay of Algorithm~\ref{alg:q-learn}. We use Mario level of difficulty 1 so that the levels provide a challenge with enemies, but not so hard that a random agent cannot make considerable progress.
+ 
+ Due to the variation in available rewards between each Mario level, we have compared all performance results against an agent that acts randomly. To reduce noise in our plots, we compute a running average of total rewards over 100 episodes. The Mario environment provides a substantially large reward for reaching the end of the level. When averaging this reward over 100 levels, it provides too much weight that de-emphasizes the results of the other episodes. For this reason, we have capped the max reward that a single episode can add to the running average.
+ 
+ \subsection{Transfer Learning Between Levels}
+ 
+ \begin{figure}
+\begin{center}
+\includegraphics[scale=0.42]{transfer_levels.png}
+\caption{This test matches earlier experiments, though every 100 episodes the Mario envrionment changes to a new level. Episode number 300 and 800 correspond to the results of averaging 100 episodes of only level seed 3 and 8 respectively. The performance of the learned agent is consistent with what we observed in earlier tests with training an agent only on these levels.}
+\end{center}
+\end{figure}
  
 \section*{Acknowledgments} 
  
