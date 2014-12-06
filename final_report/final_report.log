@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  17 NOV 2014 20:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.5.30)  6 DEC 2014 13:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -413,74 +413,150 @@ Overfull \hbox (5.1225pt too wide) in paragraph at lines 69--69
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 69.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 80.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
+<main_figure.png, id=6, 1215.54124pt x 711.65875pt>
+File: main_figure.png Graphic file (type png)
+ <use main_figure.png>
+Package pdftex.def Info: main_figure.png used on input line 86.
+(pdftex.def)             Requested size: 230.95523pt x 135.21657pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 109.
+(Font)              <7> on input line 92.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 109.
+(Font)              <5> on input line 92.
 
-Underfull \hbox (badness 7397) in paragraph at lines 118--119
-[] []\OT1/ptm/m/n/10 With prob-a-bil-ity $\OML/cmm/m/it/10 ^^O[]$\OT1/ptm/m/n/1
-0 , store the ex-pe-ri-ence
+[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+
+ <./main_figure.png>] <mario_screenshot.png, id=27, 636.3775pt x 474.77374pt>
+File: mario_screenshot.png Graphic file (type png)
+
+<use mario_screenshot.png>
+Package pdftex.def Info: mario_screenshot.png used on input line 112.
+(pdftex.def)             Requested size: 222.73546pt x 166.1733pt.
+ <game_state.png, id=28, 137.51375pt x 251.94125pt>
+File: game_state.png Graphic file (type png)
+
+<use game_state.png>
+Package pdftex.def Info: game_state.png used on input line 114.
+(pdftex.def)             Requested size: 57.75537pt x 105.81459pt.
+ <encoded_state.png, id=29, 578.16pt x 433.62pt>
+File: encoded_state.png Graphic file (type png)
+
+<use encoded_state.png>
+Package pdftex.def Info: encoded_state.png used on input line 116.
+(pdftex.def)             Requested size: 248.60394pt x 186.45296pt.
+
+Overfull \hbox (13.72644pt too wide) in paragraph at lines 116--117
+ [][] 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-
-
-
-]
-<progress_report.png, id=32, 578.16pt x 433.62pt>
-File: progress_report.png Graphic file (type png)
- <use progress_report.png>
-Package pdftex.def Info: progress_report.png used on input line 147.
+[2 <./mario_screenshot.png> <./game_state.png> <./encoded_state.png>]
+<seed3.png, id=58, 578.16pt x 433.62pt>
+File: seed3.png Graphic file (type png)
+ <use seed3.png>
+Package pdftex.def Info: seed3.png used on input line 171.
 (pdftex.def)             Requested size: 242.82555pt x 182.11916pt.
 
-Overfull \hbox (7.94804pt too wide) in paragraph at lines 147--148
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 171--172
  [] 
  []
 
-(./final_report.bbl
+<seed8.png, id=59, 578.16pt x 448.074pt>
+File: seed8.png Graphic file (type png)
+ <use seed8.png>
+Package pdftex.def Info: seed8.png used on input line 173.
+(pdftex.def)             Requested size: 242.82555pt x 188.18979pt.
+
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 173--174
+ [][] 
+ []
+
+
+Underfull \vbox (badness 7777) has occurred while \output is active []
+
+
+<10000epsSeed8.png, id=61, 578.16pt x 449.5194pt>
+File: 10000epsSeed8.png Graphic file (type png)
+ <use 10000epsSeed8.png>
+Package pdftex.def Info: 10000epsSeed8.png used on input line 191.
+(pdftex.def)             Requested size: 242.82555pt x 188.79684pt.
+
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 191--192
+ [] 
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2 <./progress_report.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 166.
- [3
+ [3]
+<seed3wSubstrates.png, id=73, 578.16pt x 433.62pt>
+File: seed3wSubstrates.png Graphic file (type png)
+ <use seed3wSubstrates.png>
+Package pdftex.def Info: seed3wSubstrates.png used on input line 205.
+(pdftex.def)             Requested size: 242.82555pt x 182.11916pt.
 
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 166.
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 205--206
+ [] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4 <./seed3.png> <./seed8.png> <./10000epsSeed8.png>]
+<transfer_levels.png, id=87, 578.16pt x 433.62pt>
+File: transfer_levels.png Graphic file (type png)
+ <use transfer_levels.png>
+Package pdftex.def Info: transfer_levels.png used on input line 225.
+(pdftex.def)             Requested size: 242.82555pt x 182.11916pt.
+
+Overfull \hbox (7.94804pt too wide) in paragraph at lines 225--226
+ [] 
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 226--226
+[][][]\OT1/ptm/m/n/9 Here, ev-ery 100 episodes the Mario en-vri-on-ment
+ []
+
+(./final_report.bbl
+Underfull \vbox (badness 2158) has occurred while \output is active []
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 237.
+ [5 <./seed3wSubstrates.png> <./transfer_levels.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 237.
  (./final_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 166.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 166.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 237.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 237.
 Package rerunfilecheck Info: File `final_report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 166.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 237.
  ) 
 Here is how much of TeX's memory you used:
- 6613 strings out of 493315
- 96618 string characters out of 6137904
- 207627 words of memory out of 5000000
- 9970 multiletter control sequences out of 15000+600000
+ 6687 strings out of 493315
+ 97864 string characters out of 6137904
+ 208627 words of memory out of 5000000
+ 10016 multiletter control sequences out of 15000+600000
  19378 words of font info for 34 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 33i,11n,45p,1010b,654s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 31i,11n,45p,816b,652s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
-xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texl
-ive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
-e/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
-013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
-13/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2013
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2013/texmf-dis
-t/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/ty
-pe1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/ti
-mes/utmri8a.pfb>
-Output written on final_report.pdf (3 pages, 170415 bytes).
+xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texl
+ive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texliv
+e/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
+2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/201
+3/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2013
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2013/t
+exmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2013/texmf-dist/
+fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type
+1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/time
+s/utmri8a.pfb>
+Output written on final_report.pdf (5 pages, 981006 bytes).
 PDF statistics:
- 101 PDF objects out of 1000 (max. 8388607)
- 83 compressed objects within 1 object stream
- 21 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 147 PDF objects out of 1000 (max. 8388607)
+ 112 compressed objects within 2 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
