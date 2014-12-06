@@ -35,8 +35,12 @@ monsterNames = ["Mario", "Red Koopa", "Green Koopa", "Goomba", "Spikey", "Piranh
 *  second bit is "cannot go through this tile from below"
 *  third bit is "cannot go through this tile from either side"
 '''
+#This is the encoder for the single layer state
 tileEncoder = {'\0': -1, '1': -1, '2': -1, '3': -1, '4': -1, '5': -1, '6': -1, '7': -1, 'M': 0, '$': 2, 'b': 2, '?': 2, '|': 2, '!': 2, ' ': 1, '\n': 1}
-#TODO: Maybe have a set of these encodings that we can switch between?
+
+#These are the encoders for the multiple substrates state
+backgroundLayer = {'\0': 2, '1': 1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 2, 'M': 0, '$': 0, 'b': 0, '?': 0, '|': 0, '!': 0, ' ': 0, '\n': 0}
+rewardLayer = {'\0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, 'M': 0, '$': 1, 'b': 1, '?': 1, '|': 1, '!': 2, ' ': 0, '\n': 0}
 
 class MarioAgent(Agent):
 	
@@ -47,8 +51,13 @@ class MarioAgent(Agent):
         self.total_steps = 0
         self.step_number = 0
         self.exp = 0.75 #Exploration factor
-        self.state_dim_x = 20
-        self.state_dim_y = 12
+        self.substrate_mode = False
+        if (self.substrate_mode):
+            self.state_dim_x = 33
+            self.state_dim_y = 7
+        else:
+            self.state_dim_x = 20
+            self.state_dim_y = 12
         self.last_state = None
         self.last_action = None
         random.seed(0)
@@ -103,6 +112,15 @@ class MarioAgent(Agent):
             self.loadQFun(splitString[1])
             print "Loaded."
             return "message understood, loading policy"
+        if inMessage.startswith("use_impactful_experiences"):
+            self.Q.use_impactful = True
+            return "message understood, using impactful experiences"
+        if inMessage.startswith("use_all_experiences"):
+            self.Q.use_impactful = False
+            return "message understood, using all experiences"
+        if inMessage.startswith("reset_q"):
+            self.Q = QNN(nactions=12, input_size=(self.state_dim_x*self.state_dim_y), max_experiences=500, gamma=0.6, alpha=0.2)
+            return "message understood, reseting q-function"
         return None
 
     def getMonsters(self, observation):
@@ -177,6 +195,13 @@ class MarioAgent(Agent):
         self.Q.ExperienceReplay()
 
     def stateEncoder(self, observation):
+        if (not self.substrate_mode):
+            return self.stateEncoderSingle(observation)
+        else:
+            return self.stateEncoderMultiple(observation)
+        pass
+
+    def stateEncoderSingle(self, observation):
         s = []
         #Determine Mario's current position. Everything is relative to Mario
         mar = self.getMario(observation)
@@ -204,6 +229,41 @@ class MarioAgent(Agent):
                 continue
             s[y*self.state_dim_x + x] = -2
         return s
+
+    def stateEncoderMultiple(self, observation):
+        s1 = []
+        s2 = []
+        s3 = []
+        #Determine Mario's current position. Everything is relative to Mario
+        mar = self.getMario(observation)
+        mx = int(mar[0])
+        my = 15 - int(mar[1])
+        #Add background and reward layers with a placeholder monster layer
+        for yi in xrange(self.state_dim_y):
+            for xi in xrange(self.state_dim_x/3):
+                x = mx + xi - int(self.state_dim_x/6.0)
+                y = my + yi - int(self.state_dim_y/2.0)
+                if (x < 0 or x > 21 or y < 0 or y > 15):
+                    s1.append(0)
+                    s2.append(0)
+                    s3.append(0)
+                    continue
+                s1.append(backgroundLayer[observation.charArray[y*22+x]])
+                s2.append(rewardLayer[observation.charArray[y*22+x]])
+                s3.append(0)
+        #Add monsters to the monster layer
+        monsters = self.getMonsters(observation)
+        for mi in xrange(len(monsters)):
+            if (monsters[mi].type == 0 or monsters[mi].type == 10 or monsters[mi].type == 11):#skip mario
+                continue
+            monx = int(monsters[mi].x)
+            mony = 15 - int(monsters[mi].y)
+            x = monx - mx + int(self.state_dim_x/6.0) - observation.intArray[0]
+            y = mony - my + int(self.state_dim_y/2.0)
+            if (x < 0 or x >= self.state_dim_x/3 or y < 0 or y >= self.state_dim_y): #skip monsters farther away
+                continue
+            s3[y*self.state_dim_x/3 + x] = 1
+        return s1 + s2 + s3
 
     def actionEncoder(self, act):
         a = 1*act.intArray[2] + 2*act.intArray[1] + 4*(act.intArray[0]+1)

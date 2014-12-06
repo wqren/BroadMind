@@ -42,6 +42,7 @@ class QNN():
         self.max_experiences = max_experiences
         self.gamma = gamma
         self.use_sarsa = use_sarsa
+        self.use_impactful = True
         self.prob_remember = 0.1
         self.num_replay_samples = 10
         
@@ -66,11 +67,16 @@ class QNN():
         self.NN.propagateAndUpdate(s1, a)
 
     def RememberExperience(self, s1, a1, r, s2, a2):
-        if (random.random() < self.prob_remember * (1 + (abs(r)-self.mean_experience_reward)/self.std_dev_experience_reward)):
+        factor = 1.0
+        if (self.use_impactful):
+            factor += (abs(r)-self.mean_experience_reward)/self.std_dev_experience_reward
+        if (random.random() < self.prob_remember * factor):
             if (len(self.experiences) >= self.max_experiences):
                 self.experiences.pop(random.randint(0, self.max_experiences-1))
             self.experiences.append(Experience(s1, a1, r, s2, a2))
             rs = np.zeros(len(self.experiences))
+            if (not self.use_impactful):
+                return
             for i in xrange(len(rs)):
                 rs[i] = self.experiences[i].r
             self.mean_experience_reward = np.mean(rs[i])

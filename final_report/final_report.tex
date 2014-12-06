@@ -67,13 +67,13 @@
 ]
 
 \begin{abstract} 
-Recent work in reinforcement learning has focused on building generalist video game agents, as opposed to focusing on a particular genre of games. We aim to build a more specialized high-performance agent focused on the more challenging genre of platform games, which has received less attention. Utilizing symbolic representations of game state, we are training fully connected Neural Q-Network agents to successfully learn to play games with long term rewards and complex dynamics.
+Recent work in reinforcement learning has focused on building generalist video game agents, as opposed to focusing on a particular genre of games. We aim to build a more specialized high-performance agent focused on the more challenging genre of platform games, which has received less attention. Utilizing symbolic representations of game state, we have trained fully connected Neural Q-Network agents to successfully learn to play games with long term rewards and complex dynamics.
 \end{abstract} 
 
 
 
 \section{Background}
-Platform games involve a free-running avatar that jumps between suspended platforms and avoid obstacles to advance through levels in the game. As a result of the array of environments to parse and the huge decision space, these games are very difficult for learning agents to play well. We are building an agent does not have to simulatenously recognize the screen-space pixels of the game and decide optimal policies. Instead, we have decoupled these two problems, using symbolic state representations from the environment encoded for the agent. However, this symbolic representation is still very large, motivating us to utilize neural network-based Q-learning approaches. 
+Platform games involve a free-running avatar that jumps between suspended platforms and avoid obstacles to advance through levels in the game. As a result of the array of environments to parse and the huge decision space, these games are very difficult for learning agents to play well. We have built an agent that does not have to simulatenously recognize the screen-space pixels of the game and decide optimal policies. Instead, we have decoupled these two problems, using symbolic state representations from the environment encoded for the agent. However, this symbolic representation is still very large, motivating us to utilize neural network-based Q-learning approaches. 
 
 \section{Approach}
 
@@ -84,6 +84,8 @@ We have developed a Neural Q-Network algorithm that can be extended as a reinfor
 RL-Glue is a socket-based API that enables reinforcement learning experiments to work with software across multiple languages \cite{Tanner09}. Is allows our experiments to connect reusable Python agents across many open source environments written in languages including C++ and Java. It also enables us to customize our experiments, such as optional game visualization, loading and saving trained policies, adjusting the game difficulty, etc.
 
 We have started evaluating our agents in the Generalized Mario environment. This is part of the 2009 AI Competition software package and is RL-Glue compatible \cite{Togelius10}. The Generalized Mario game has a total control input space of 12, which we encode to integers. The raw state is made up of left/right/none motions, on/off for jump, and on/off for run. The observation interface provides the 2D screen position and velocity of the mario actor, as well as a 22x16 tile grid semantically describing the screen space with the location of coins, pipes, blocks, etc. Separately, it has a list of all enemy positions on-screen, with similar position and velocity information as provided about Mario. 
+
+The Generalized Mario environment provides a small negative reward of $-0.01$ every timestep where nothing occurred, a positive reward of $1$ for smashing enemies or collecting coins, a substantial positive reward of $~100$ for reaching the goal, and a substantial negative reward of $-10$ for Mario's death.
 
 We have leveraged the Arcade Learning Environment, an RL-Glue compatible framework built on top of an Atari 2600 emulator \cite{bellemare13}.  It provides an API for interfacing with the raw pixels, the current score, and the controller input of the game. This has allowed us to use original Atari games to train and evaluate our agents. We currently support 7 Atari platformers in our experimental setup:
 
@@ -113,7 +115,11 @@ We have leveraged the Arcade Learning Environment, an RL-Glue compatible framewo
 \end{figure}
 
 \subsubsection{State Representation in Mario}
-It is challenging to find an effective representation of the Mario game state that enables effective Q-learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many possible encodings that we are investigating. Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location. We intend to represent the state with separate substrates for each class of objects, as in \cite{Hauskneck13}, by breaking it out into separate background, enemy, reward, and actor layers. We hope to find that this representation will be universal across platform games. None of these representations encode the important velocity information about the actors, which is important in platformers where the characters move with some inertia.
+It is challenging to find an effective representation of the Mario game state that enables effective Q-learning. The environment observations provided by Generalized Mario contains a wealth of symbolic information, but there are many possible encodings that we are investigating. Currently, our representation is a tiled grid of integers, 20x12 tiles in size. The relative value in each tile is given as a ``measure of goodness'', enemies are -2, obstacles are -1, coins are +2, etc. The grid is centered on Mario's current location. 
+
+We have also represented the state with separate substrates for each class of objects, as in \cite{Hauskneck13}, by breaking it out into separate background, enemy, and reward layers. It is possible that this representation will be universal across platform games. To conserve memory and computation, this representation restricts each of the 3 substrates to an 11x7 set of tiles centered around Mario, which makes the total state size roughly equivalent to the earlier representation. Note that this representation does not explicitly encode Mario's position, but it does so implicitly as the tiles are centered at Mario's position. This position will never fluctuate with tiles of odd edge lengths.
+
+None of these representations encode the important velocity information about the actors, which is important in platformers where the characters move with some inertia.
 
 \begin{algorithm}[tb]
    \caption{Neural Q-Network with Impactful Experience Replay}
@@ -154,41 +160,64 @@ Typically, Q-Learning approaches use a table representing the Q-function. For ve
 
 Inspired by DeepMind's approach \cite{Mnih13}, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. Also like DeepMind, we include an Experience Replay step that stores a history of events to re-learn. This avoids overfitting to the current situation and unlearning good behavior from earlier episodes. Our algorithm can optionally use the standard Q-Learning update, or the SARSA calculation.
 
-We have adjusted the experience rememberance process to prioritize memorization of meaningful experiences. We observe that experiences corresponding with large positive or negative rewards are rare, but these are the experiences that provide the most value to the agent. To do this, we modify the probability of rememberance, multiplying by $1 + \frac{|r| - r_{ave}}{r_{dev}}$.
+We have adjusted the experience rememberance process to prioritize memorization of meaningful experiences. We observe that experiences corresponding with large positive or negative rewards are rare, but these are the experiences that provide the most value to the agent. To do this, we modify the probability of rememberance, multiplying by $1 + \frac{|r| - r_{ave}}{r_{dev}}$ to increase the chances of remembering experiences that are observed to be impactful.
 
  \begin{figure}
  \begin{center}
-\includegraphics[scale=0.42]{progress_report.png}
+\includegraphics[scale=0.42]{seed3.png}
 \caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 1000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
 \includegraphics[scale=0.42]{seed8.png}
 \caption{The same test performed with level seed 8. At its peak, the mean reward earned for the learned agent is roughly double that of random behavior}
-\includegraphics[scale=0.42]{seed20.png}
-\caption{Another test with level seed 20. This level has less available positive rewards, so the learned agent does not show the same level of performance improvement.}
 \end{center}
 \end{figure}
 
 \subsubsection{Extension to Atari Platformers}
-We have setup the ALE environment, and connected default agents to it. However, we have yet to attempt to port our Mario agents to these problems. Initially, we will use 3 colored pixel substrates as the state representation, as in \cite{Hauskneck13}, but we hope to reconstruct an object layer as well.
+We have setup the ALE environment, and connected default agents to it. However, we have yet to attempt to port our agents to these problems. First, we will need to develop an agent that can learn our symbolic state representations from raw pixel inputs provided by the ALE environment.
  
  \section{Results}
  
  \begin{figure}
 \begin{center}
-\includegraphics[scale=0.42]{10000eps.png}
-\caption{Level seed 3 continued out to 10,000 episodes. Performance ceases to improve past episode 2,000.}
+\includegraphics[scale=0.42]{10000epsSeed8.png}
+\caption{Level seed 8 continued out to 10,000 episodes with and without impact-weighted experience rememberance. Each point represents an average over 100 episodes.}
 \end{center}
 \end{figure}
  
 We have found that the initial random weights in the neural network can make the early policies very flawed. To counter this, we use heavy exploration bias ($\epsilon = 1.0$) for early episodes, while transitioning to exploitation policies ($\epsilon$ = 0.1) at later episodes. We have also biased the random action to prefer motion to the right, helping the agent to explore more of the game. We trained agents over 1000 episodes in the Mario environment using the state encoded in the format described in section 2.2.1, and using the Neural Q-Network with experience replay of Algorithm~\ref{alg:q-learn}. We use Mario level of difficulty 1 so that the levels provide a challenge with enemies, but not so hard that a random agent cannot make considerable progress.
  
- Due to the variation in available rewards between each Mario level, we have compared all performance results against an agent that acts randomly. To reduce noise in our plots, we compute a running average of total rewards over 100 episodes. The Mario environment provides a substantially large reward for reaching the end of the level. When averaging this reward over 100 levels, it provides too much weight that de-emphasizes the results of the other episodes. For this reason, we have capped the max reward that a single episode can add to the running average.
+Due to the variation in available rewards between each Mario level, we have compared all performance results against an agent that acts randomly. To reduce noise in our plots, we compute a running average of total rewards over 100 episodes. The Mario environment provides a substantially large reward for reaching the end of the level. When averaging this reward over 100 levels, it provides too much weight that de-emphasizes the results of the other episodes. For this reason, we have capped the max reward that a single episode can add to the running average.
+ 
+ \subsection{Impactful Experience Rememberance}
+ We evaluated the performance of an agent prioritizing impactful experiences in their memory pool against one that equally values all new experiences. We have found that both agents saturate at the same level of performance, though the impact-weighted experiences causes that agent to learn more slowly in earlier episodes. We suspect that the weight term makes most experiences nearly impossible to remember, and this slows down the rate at which the experience pool can be filled. A good compromise may be to deactivate the weight term until the experience pool is at max capacity.
  
  \subsection{Transfer Learning Between Levels}
+ 
+ Our initial experiments focused on simultanous training and testing of an agent that is continuously executing the same level of the game. We are interested in training a generalist agent that can perform well on an experience that has not yet been seen. We have tested the performance of an agent that is trained for 100 episodes on each level before switching to a completely new level of similar difficulty. We have found that performance on these new levels seems to match what we would see if the agent were trained only on that level.
+ 
+ \subsection{Impact of Neural Network Depth}
+ 
+  \begin{figure}
+ \begin{center}
+\includegraphics[scale=0.42]{seed3wSubstrates.png}
+\caption{Mario agent on level seed 3, using the multiple substrate state representation. The performance of this agent does not reach a point where it exceeds the performance of what could be achieved by a random agent.}
+\end{center}
+\end{figure}
+ 
+ \subsection{Multiple Substrate Representation}
+ We have trained an agent using the multiple substrate representation with separate background, enemy, and reward layers. However, we have found that this agent does not appear to be learning as its performance remains roughly in the realm of a random agent over 1000 training episodes. We believe that the smaller grid size of these substrates is not suitable for the dynamics of the Mario game.
+ 
+ \section{Conclusion}
+ 
+Our results have shown that a Q-Learning agent with a single hidden-layer neural network Q-function can learn to play a game with complex dynamics and partially observed states like Mario. This agent also performs well on unseen levels.
+ 
+ An experience replay mechanism is critical to ensure that the agent does not unlearn behavior. We have developed a novel method for emphasizing impactful experiences in memory. This approach may prove to be important when scaling this approach to a lifelong learning application. It should alleviate the need to increase the memory pool size by ensuring that less valuable experiences do not need to be stored.
+ 
+Future work should focus on application of this algorithm to platforming games on a full console emulator like the Atari ALE environment where the symbolic state representation is not directly observable by the agent, and mapping raw screen space pixels into the symbolic representation must be learned.
  
  \begin{figure}
 \begin{center}
 \includegraphics[scale=0.42]{transfer_levels.png}
-\caption{This test matches earlier experiments, though every 100 episodes the Mario envrionment changes to a new level. Episode number 300 and 800 correspond to the results of averaging 100 episodes of only level seed 3 and 8 respectively. The performance of the learned agent is consistent with what we observed in earlier tests with training an agent only on these levels.}
+\caption{This test matches earlier experiments, though every 100 episodes the Mario envrionment changes to a new level. For levels 3 and 8 that we previously examined, the performance of the learned agent is consistent with what we observed in tests that trained an agent only on these levels. After the first level where the agent is learning but still acting randomly, the learned agent exceeds random performance in every case.}
 \end{center}
 \end{figure}
  

@@ -13,7 +13,7 @@ def trainAgent():
         totalSteps = 0
 	exp = 1.0
 	raw_results = []
-        RLGlue.RL_agent_message("freeze learning");
+	print RLGlue.RL_agent_message("freeze_learning");
         for i in range(episodesToRun):
 		if (i % 100 == 0):
 			loadMario(True, False, i/100, 0, 1, whichTrainingMDP)
@@ -27,11 +27,12 @@ def trainAgent():
                 print "Total return in episode %d is %f" %(i, thisReturn)
 		raw_results.append(thisReturn)
                 totalSteps += thisSteps
-        RLGlue.RL_agent_message("unfreeze learning");
+        print RLGlue.RL_agent_message("unfreeze_learning");
         print "Total steps : %d\n" % (totalSteps)
 	results1 = []
 	for i in range(100,episodesToRun):
-		results1.append(sum(raw_results[i-100:i])/100.0)
+		if (i % 100 == 0):
+			results1.append(sum(raw_results[i-100:i])/100.0)
 
         raw_results = []
         for i in range(episodesToRun):
@@ -52,11 +53,12 @@ def trainAgent():
         print "Total steps : %d\n" % (totalSteps)
         results2 = []
         for i in range(100,episodesToRun):
-                results2.append(sum(raw_results[i-100:i])/100.0)
+		if (i % 100 == 0):
+			results2.append(sum(raw_results[i-100:i])/100.0)
 
 	plt.plot(results1, color='red', label='Random')
 	plt.plot(results2, color='blue', label='Neural Q-Network')
-	plt.xlabel('Episode Number')
+	plt.xlabel('Level Seed')
 	plt.ylabel('Mean Total Reward over 100 Episodes')
 	plt.legend()
 	plt.show()
