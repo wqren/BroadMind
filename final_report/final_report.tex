@@ -170,8 +170,8 @@ We have adjusted the experience rememberance process to prioritize memorization 
  \begin{center}
 \includegraphics[scale=0.42]{seed3.png}
 \caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 1000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
-\includegraphics[scale=0.42]{seed8.png}
-\caption{The same test performed with level seed 8. At its peak, the mean reward earned for the learned agent is roughly double that of random behavior}
+\includegraphics[scale=0.25]{layer2_126_550144_3000.png}
+\caption{The same test performed as the previous figure, though now with 2 hidden layers. The additional layer allows the agent to achieve a higher performing agent at steady state.}
 \end{center}
 \end{figure}
 
@@ -189,7 +189,7 @@ Due to the variation in available rewards between each Mario level, we have comp
  \begin{figure}
  \begin{center}
  \includegraphics[scale=0.42]{10000epsSeed8.png}
-\caption{Level seed 8 continued out to 10,000 episodes with and without impact-weighted experience rememberance. Each point represents an average over 100 episodes.}
+\caption{Level seed 8 continued out to 10,000 episodes with and without impact-weighted experience rememberance, all with a single hidden layer. Each point represents an average over 100 episodes.}
  \end{center}
  \end{figure}
  
