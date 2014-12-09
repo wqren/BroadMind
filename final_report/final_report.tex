@@ -218,7 +218,9 @@ We have found that encoding the symbolic game state in a single layer has led to
  
 An experience replay mechanism is critical to ensure that the agent does not unlearn behavior. We have developed a novel method for emphasizing impactful experiences in memory. This approach may prove to be important when scaling this approach to a lifelong learning application. It should alleviate the need to increase the memory pool size by ensuring that less valuable experiences do not need to be stored. However, our early results have shown that this mechanism delays learning in early episodes as it takes longer to fill the experience pool.
  
-Future work should focus on application of this algorithm to platforming games on a full console emulator like the Atari ALE environment where the symbolic state representation is not directly observable by the agent, and mapping raw screen space pixels into the symbolic representation must be learned.
+Future work should focus on application of this algorithm to platforming games on a full console emulator like the Atari ALE environment where the symbolic state representation is not directly observable by the agent, and mapping raw screen space pixels into the symbolic representation must be learned. 
+
+We have also begun to investigate the use of GPU accelerated computing to speed up the execution of agents using deep neural networks of 2 or more hidden layers.
  
  \begin{figure}
 \begin{center}
