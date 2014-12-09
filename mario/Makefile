@@ -1,6 +1,6 @@
 .PHONY: all
 # Source Files
-ENVIRONMENT = marioLoader
+ENVIRONMENT = transferBetweenLevels
 AGENT = marioAgent
 SRC_PATH = ./src
 

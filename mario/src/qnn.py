@@ -33,19 +33,17 @@ class QNN():
         return self.GetValue(s,a)
 
     def __init__(self, nactions, input_size, max_experiences=500, gamma=0.6, alpha=0.1, use_sarsa=False):
+        # lay = [input_size, int((nactions+input_size)/2.0), nactions]
         lay = [input_size, int((nactions+input_size)/2.0), nactions]
         self.nactions = nactions
         self.NN = NeuralNet(layers=lay, epsilon=0.154, learningRate=alpha)
         self.experiences = []
-        self.mean_experience_reward = 0.0001
-        self.std_dev_experience_reward = 0.00005
         self.max_experiences = max_experiences
         self.gamma = gamma
         self.use_sarsa = use_sarsa
-        self.use_impactful = True
         self.prob_remember = 0.1
         self.num_replay_samples = 10
-        
+
     def GetValue(self, s, a=None):
         """ Return the Q(s,a) value of state (s) for action (a)
         or al values for Q(s)
@@ -67,20 +65,11 @@ class QNN():
         self.NN.propagateAndUpdate(s1, a)
 
     def RememberExperience(self, s1, a1, r, s2, a2):
-        factor = 1.0
-        if (self.use_impactful):
-            factor += (abs(r)-self.mean_experience_reward)/self.std_dev_experience_reward
-        if (random.random() < self.prob_remember * factor):
+        if (random.random() < self.prob_remember):
             if (len(self.experiences) >= self.max_experiences):
+                #TODO: Something more intelligent about how we determine what is worth forgetting
                 self.experiences.pop(random.randint(0, self.max_experiences-1))
             self.experiences.append(Experience(s1, a1, r, s2, a2))
-            rs = np.zeros(len(self.experiences))
-            if (not self.use_impactful):
-                return
-            for i in xrange(len(rs)):
-                rs[i] = self.experiences[i].r
-            self.mean_experience_reward = np.mean(rs[i])
-            self.std_dev_experience_reward = np.std(rs[i])
 
     def ExperienceReplay(self):
         #Skip until we have enough experience

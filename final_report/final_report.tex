@@ -4,7 +4,7 @@
 
 % Use the following line _only_ if you're still using LaTeX 2.09.
 %\documentstyle[icml2014,epsf,natbib]{article}
-% If you rely on Latex2e packages, like most moden people use this:
+% If you rely on Latex2e packages, like most modern people use this:
 \documentclass{article}
 
 % use Times
@@ -87,7 +87,7 @@ RL-Glue is a socket-based API that enables reinforcement learning experiments to
 \end{center}
 \end{figure}
 
-We have trained our agents in the Generalized Mario environment. This is part of the 2009 AI Competition software package and is RL-Glue compatible \cite{Togelius10}. The Generalized Mario game has a total control input space of 12, which we encode to integers. The raw state is made up of left/right/none motions, on/off for jump, and on/off for run. The observation interface provides the 2D screen position and velocity of the mario actor, as well as a 22x16 tile grid semantically describing the screen space with the location of coins, pipes, blocks, etc. Separately, it has a list of all enemy positions, with similar position and velocity information as provided about Mario. We use these high-level representations of game state to encode a symbolic state representation.
+We have trained our agents in the Generalized Mario environment. This is part of the 2009 AI Competition software package and is RL-Glue compatible \cite{Togelius10}. The Generalized Mario game has a total control input space of 12, which we encode to integers. The raw state is made up of left/right/none motions, on/off for jump, and on/off for run. The observation interface provides the 2D screen position and velocity of the Mario actor, as well as a 22x16 tile grid semantically describing the screen space with the location of coins, pipes, blocks, etc. Separately, it has a list of all enemy positions, with similar position and velocity information as provided about Mario. We use these high-level representations of game state to encode a symbolic state representation.
 
 The Generalized Mario environment provides a positive reward of $1$ for smashing enemies or collecting coins, a substantial positive reward of $~100$ for reaching the goal, a substantial negative reward of $-10$ for Mario's death, and a small negative reward of $-0.01$ every timestep where nothing else occurred, 
 
@@ -110,11 +110,11 @@ We have leveraged the Arcade Learning Environment, an RL-Glue compatible framewo
  \begin{figure}
  \begin{center}
 \includegraphics[scale=0.35]{mario_screenshot.png}
-\caption{Raw pixels representing the state of the mario game, as it would be seen by a player.}
-\includegraphics[scale=0.42]{game_state.png}
+\caption{Raw pixels representing the state of the Mario game, as it would be seen by a player.}
+\includegraphics[scale=1.2]{game_state2.png}
 \caption{The equiivalent game state encoded as symbolic characters, as provided to the learning agent by the Mario environment in each timestep.}
 \includegraphics[scale=0.43]{encoded_state.png}
-\caption{Our encoding of the game state in a 20x12 grid with Mario at the center, as provided to the Neural Q-Network. Larger postive values correspond to positive symbols such as coins and free space, and negative values correspond to negative symbols such as enemies and obstacles.}
+\caption{Our encoding of the game state in a 20x12 grid with Mario at the center, as provided to the Neural Q-Network. Larger positive values correspond to positive symbols such as coins and free space, and negative values correspond to negative symbols such as enemies and obstacles.}
 \end{center}
 \end{figure}
 
@@ -164,12 +164,12 @@ Typically, Q-Learning approaches use a table representing the Q-function. For ve
 
 Inspired by DeepMind's approach \cite{Mnih13}, we have avoided multiple forward propagation steps when selecting optimal actions by using only the state as the input to the network, and a weight for each action as the output. Thus, we can select an optimal action for a state by propagating once, and selecting the max argument from the outputs. Also like DeepMind, we include an Experience Replay step that stores a history of events to re-learn. This avoids overfitting to the current situation and unlearning good behavior from earlier episodes. Our algorithm can optionally use the standard Q-Learning update, or the SARSA calculation.
 
-We have adjusted the experience rememberance process to prioritize memorization of meaningful experiences. We observe that experiences corresponding with large positive or negative rewards are rare, but these are the experiences that provide the most value to the agent. To do this, we modify the probability of rememberance, multiplying by $1 + \frac{|r| - r_{ave}}{r_{dev}}$ to increase the chances of remembering experiences that are observed to be impactful.
+We have adjusted the experience remembrance process to prioritize memorization of meaningful experiences. We observe that experiences corresponding with large positive or negative rewards are rare, but these are the experiences that provide the most value to the agent. To do this, we modify the probability of remembrance, multiplying by $1 + \frac{|r| - r_{ave}}{r_{dev}}$ to increase the chances of remembering experiences that are observed to be impactful.
 
  \begin{figure}
  \begin{center}
-\includegraphics[scale=0.42]{seed3.png}
-\caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 1000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
+\includegraphics[scale=0.28]{2layer3000.png}
+\caption{Mario agent trained with a neural q-network with a hidden layer of 126 nodes. The agent was trained for 3000 episodes of the same level seed 3 and difficulty 1. The initial exploration factor was 1.0, and this decreased by 0.05 every 100 episodes, until stopping at 0.1. The total reward gained by the agent was summed over each episode, and the running average of 100 episodes is shown here.}
 \includegraphics[scale=0.25]{layer2_126_550144_3000.png}
 \caption{The same test performed as the previous figure, though now with 2 hidden layers. The additional layer allows the agent to achieve a higher performing agent at steady state.}
 \end{center}
@@ -189,16 +189,16 @@ Due to the variation in available rewards between each Mario level, we have comp
  \begin{figure}
  \begin{center}
  \includegraphics[scale=0.42]{10000epsSeed8.png}
-\caption{Level seed 8 continued out to 10,000 episodes with and without impact-weighted experience rememberance, all with a single hidden layer. Each point represents an average over 100 episodes.}
+\caption{Level seed 8 continued out to 10,000 episodes with and without impact-weighted experience remembrance, all with a single hidden layer. Each point represents an average over 100 episodes.}
  \end{center}
  \end{figure}
  
- \subsection{Impactful Experience Rememberance}
+ \subsection{Impactful Experience remembrance}
  We evaluated the performance of an agent prioritizing impactful experiences in their memory pool against one that equally values all new experiences. We have found that both agents saturate at the same level of performance, though the impact-weighted experiences causes that agent to learn more slowly in earlier episodes. We suspect that the weight term makes most experiences nearly impossible to remember, and this slows down the rate at which the experience pool can be filled. A good compromise may be to deactivate the weight term until the experience pool is at max capacity.
  
  \subsection{Transfer Learning Between Levels}
  
- Our initial experiments focused on simultanous training and testing of an agent that is continuously executing the same level of the game. We are interested in training a generalist agent that can perform well on an experience that has not yet been seen. We have tested the performance of an agent that is trained for 100 episodes on each level before switching to a completely new level of similar difficulty. We have found that performance on these new levels seems to match what we would see if the agent were trained only on that level.
+ Our initial experiments focused on simultaneous training and testing of an agent that is continuously executing the same level of the game. We are interested in training a generalist agent that can perform well on an experience that has not yet been seen. We have tested the performance of an agent that is trained for 100 episodes on each level before switching to a completely new level of similar difficulty. We have found that performance on these new levels seems to match what we would see if the agent were trained only on that level.
  
   \begin{figure}
  \begin{center}
@@ -224,8 +224,8 @@ We have also begun to investigate the use of GPU accelerated computing to speed 
  
  \begin{figure}
 \begin{center}
-\includegraphics[scale=0.42]{transfer_levels.png}
-\caption{Here, every 100 episodes the Mario envrionment changes to a new level. For levels 3 and 8 that we previously examined, the performance of the learned agent is consistent with what we observed in tests that trained an agent only on these levels. After the first level where the agent is learning but still acting completely randomly, the learned agent exceeds random performance in every case.}
+\includegraphics[scale=0.72]{transfer_levels2.png}
+\caption{Here, every 100 episodes the Mario environment changes to a new level. For levels 3 and 8 that we previously examined, the performance of the learned agent is consistent with what we observed in tests that trained an agent only on these levels. After the first level where the agent is learning but still acting completely randomly, the learned agent exceeds random performance in nearly every case.}
 \end{center}
 \end{figure}
  
